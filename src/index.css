@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mint-50: #effef7;
+  --color-mint-100: #dafeef;
+  --color-mint-200: #b8fadd;
+  --color-mint-300: #81f4c3;
+  --color-mint-400: #43e5a0;
+  --color-mint-500: #1acd81;
+  --color-mint-600: #0fa968;
+  --color-mint-700: #108554;
+  --color-mint-800: #126945;
+  --color-mint-900: #11563a;
+  --color-mint-950: #063020;
+}
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+}
+
+body {
+  @apply bg-gray-900 text-gray-100 antialiased;
+}
