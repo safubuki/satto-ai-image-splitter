@@ -82,7 +82,7 @@ export async function analyzeImage(fileBase64: string, apiKey: string, modelName
         const json = JSON.parse(jsonStr) as AnalyzeResponse;
         if (!json.crops || !Array.isArray(json.crops)) {
             // Fallback: try to fix common JSON issues or just throw
-            throw new Error("Invalid Array format in response");
+            throw new Error("APIからの応答が不正なフォーマットです");
         }
         return json;
 
@@ -91,15 +91,15 @@ export async function analyzeImage(fileBase64: string, apiKey: string, modelName
         console.error("Gemini API Error details:", error);
 
         if (errorMessage.includes('API_KEY_INVALID') || errorMessage.includes('401')) {
-            throw new Error('API Key is invalid. Please check your settings.');
+            throw new Error('APIキーが無効です。設定を確認してください。');
         }
         if (errorMessage.includes('PERMISSION_DENIED') || errorMessage.includes('403')) {
-            throw new Error('Permission denied. Ensure the Gemini API is enabled for this key.');
+            throw new Error('アクセス権限がありません。Gemini APIがこのキーで有効になっているか確認してください。');
         }
         if (errorMessage.includes('RESOURCE_EXHAUSTED') || errorMessage.includes('429')) {
-            throw new Error('Quota exceeded (429). Please wait or switch to a "Lite" / "Flash" model in settings.');
+            throw new Error('API制限(Quota)を超えました(429)。しばらく待ってから再試行してください。');
         }
 
-        throw new Error(`Gemini API Error: ${errorMessage}`);
+        throw new Error(`Gemini API エラー: ${errorMessage}`);
     }
 }

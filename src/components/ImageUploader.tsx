@@ -66,7 +66,7 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
             {isProcessing ? (
                 <div className="flex flex-col items-center gap-4 text-mint-500 animate-pulse">
                     <Loader2 className="w-12 h-12 animate-spin" />
-                    <p className="text-lg font-medium">Processing Image...</p>
+                    <p className="text-lg font-medium">画像を処理中...</p>
                 </div>
             ) : (
                 <div className="text-center space-y-4 relative z-10">
@@ -79,11 +79,11 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
                     </div>
                     <div>
                         <h3 className="text-xl font-bold text-white mb-2">
-                            {isDragging ? "Drop it here!" : "Upload Image"}
+                            {isDragging ? "ドロップしてアップロード" : "画像をアップロード"}
                         </h3>
                         <p className="text-gray-400 max-w-sm mx-auto">
-                            Drag and drop your grid image here, or click to browse.
-                            Supports JPG, PNG, WEBP.
+                            分割したい画像をここにドラッグ＆ドロップ、またはクリックして選択。
+                            (推奨: JPG, PNG, WEBP)
                         </p>
                     </div>
                 </div>
