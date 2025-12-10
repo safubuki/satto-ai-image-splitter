@@ -10,18 +10,18 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'AI Image Splitter',
-        short_name: 'AI Splitter',
-        description: 'Auto-split grid images with AI',
+        name: 'サッとAIイメージ分割',
+        short_name: 'サッとAI分割',
+        description: 'AIで画像をサッと分割',
         theme_color: '#1acd81',
         icons: [
           {
-            src: 'favicon.png',
+            src: 'icon.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'favicon.png',
+            src: 'icon.png',
             sizes: '512x512',
             type: 'image/png'
           }
@@ -29,7 +29,7 @@ export default defineConfig({
       },
     })
   ],
-  base: '/ai-image-splitter/', // Assuming repo name will be ai-image-splitter or similar, adjusting later if needed. But user said "deploy to GitHub Pages", base is usually repo name.
+  base: './', // Use relative base for safer deployment across different contexts
   // Actually user didn't specify repo name, but project name is ai-image-splitter.
   // "satto-crop-anti" is the current folder name. I should probably use that or just './' for now to be safe with relative paths?
   // GitHub Pages usually requires repo name. I'll use './' relative base to be safe for now, or '/satto-crop-anti/' if I assume the repo name matches the folder.

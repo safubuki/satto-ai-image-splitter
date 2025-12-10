@@ -6,7 +6,7 @@ import { ResultGallery } from './components/ResultGallery';
 import { analyzeImage, type AnalyzeResponse } from './lib/geminiSplitter';
 import { processImageCrops, fileToBase64, type CropResult } from './lib/imageProcessor';
 import { saveHistory } from './lib/db';
-import { Settings, Eraser, Scissors } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
@@ -95,12 +95,13 @@ function App() {
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans">
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-mint-500/10 p-2 rounded-lg">
-              <Scissors className="w-5 h-5 text-mint-500" />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full" />
+              <img src="icon.png" alt="Logo" className="w-8 h-8 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              AI Image Splitter
+              サッとAIイメージ分割
             </h1>
           </div>
           <button
@@ -130,13 +131,6 @@ function App() {
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-medium text-gray-300">Analysis Result</h2>
-              <button
-                onClick={handleReset}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors"
-              >
-                <Eraser className="w-4 h-4" />
-                Clear & New
-              </button>
             </div>
 
             {error && (
@@ -159,6 +153,15 @@ function App() {
                       </div>
                     </div>
                   )}
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleReset}
+                    className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 group"
+                    title="Clear and start over"
+                  >
+                    <span className="group-hover:text-red-100 transition-colors">Clear & New</span>
+                  </button>
                 </div>
               </div>
 
