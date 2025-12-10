@@ -134,20 +134,23 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                             </p>
                         </div>
 
-                        <div className="flex justify-end gap-3 pt-2 border-t border-gray-800/50">
+                        <div className="flex justify-end gap-3 pt-6 border-t border-gray-800/50">
                             <button
                                 type="button"
                                 onClick={onClose}
                                 className="px-4 py-2 text-gray-400 hover:text-white transition-colors text-sm font-medium"
                             >
-                                キャンセル
+                                閉じる
                             </button>
                             <button
                                 type="submit"
-                                disabled={!key.trim()}
-                                className="px-6 py-2 bg-mint-600 hover:bg-mint-500 text-white rounded-lg font-medium transition-colors shadow-lg shadow-mint-900/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                                disabled={!isValid}
+                                className={`px-6 py-2 rounded-lg font-medium transition-all shadow-lg text-white ${isValid
+                                        ? 'bg-mint-600 hover:bg-mint-500 shadow-mint-900/20'
+                                        : 'bg-gray-800 text-gray-500 cursor-not-allowed shadow-none'
+                                    }`}
                             >
-                                保存する
+                                {initialKey && !isModified ? '保存済み' : '保存する'}
                             </button>
                         </div>
                     </form>
