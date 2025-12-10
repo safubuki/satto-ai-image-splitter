@@ -34,6 +34,13 @@ function App() {
     setIsKeyModalOpen(false);
   };
 
+  const handleClearKey = () => {
+    localStorage.removeItem('gemini_api_key');
+    // keep model preference or clear it? User didn't specify, but clearing key is main goal.
+    setApiKey('');
+    setIsKeyModalOpen(false);
+  };
+
   const handleImageSelect = async (file: File) => {
     setError(null);
     setAnalysisData(null);
@@ -94,22 +101,30 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans">
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full" />
-              <img src="icon.png" alt="Logo" className="w-8 h-8 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full group-hover:bg-mint-500/30 transition-all duration-500" />
+              <img src="icon.png" alt="Logo" className="w-10 h-10 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300" />
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              サッとAIイメージ分割
-            </h1>
+            <div className="flex flex-col justify-center">
+              <span className="text-[10px] font-bold tracking-[0.2em] text-mint-500 uppercase leading-none mb-1">
+                AI-POWERED EASY IMAGE SPLITTER
+              </span>
+              <h1 className="text-xl font-bold text-white tracking-wide leading-none mb-1">
+                サッとAIイメージ分割
+              </h1>
+              <p className="text-[11px] text-gray-400 leading-none opacity-80">
+                画像や漫画のコマをAIで自動検出。画像をそれぞれ簡単に分割保存。
+              </p>
+            </div>
           </div>
           <button
             onClick={() => setIsKeyModalOpen(true)}
             className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
             title="API Settings"
           >
-            <Settings className="w-5 h-5" />
+            <Settings className="w-6 h-6" />
           </button>
         </div>
       </header>
@@ -118,6 +133,7 @@ function App() {
         <ApiKeyModal
           isOpen={isKeyModalOpen}
           onSave={handleSaveKey}
+          onClear={handleClearKey}
           onClose={() => setIsKeyModalOpen(false)}
           initialKey={apiKey}
           initialModel={model}
@@ -198,7 +214,7 @@ function App() {
 
       <footer className="py-6 border-t border-gray-900 mt-12">
         <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
-          <p>Powered by Google Gemini 2.5 Flash • ローカル完結型アーキテクチャ (画像はアップロードされません)</p>
+          <p>Powered by Google Gemini</p>
         </div>
       </footer>
     </div>
