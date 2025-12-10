@@ -47,9 +47,9 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="w-full max-w-lg bg-gray-900 border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
+            <div className="w-full max-w-lg bg-gray-900 border border-gray-800 rounded-xl shadow-2xl">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gray-900/50">
+                <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gray-900/50 rounded-t-xl">
                     <div className="flex items-center gap-3">
                         <div className="p-2.5 bg-mint-900/30 rounded-lg">
                             <Key className="w-5 h-5 text-mint-500" />
@@ -146,8 +146,8 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 type="submit"
                                 disabled={!isValid}
                                 className={`px-6 py-2 rounded-lg font-medium transition-all shadow-lg text-white ${isValid
-                                        ? 'bg-mint-600 hover:bg-mint-500 shadow-mint-900/20'
-                                        : 'bg-gray-800 text-gray-500 cursor-not-allowed shadow-none'
+                                    ? 'bg-mint-600 hover:bg-mint-500 shadow-mint-900/20'
+                                    : 'bg-gray-800 text-gray-500 cursor-not-allowed shadow-none'
                                     }`}
                             >
                                 {initialKey && !isModified ? '保存済み' : '保存する'}
