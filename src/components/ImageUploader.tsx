@@ -44,7 +44,7 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={cn(
-                "relative w-full aspect-video max-w-2xl mx-auto rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer flex flex-col items-center justify-center p-8 group",
+                "relative w-full aspect-video max-w-2xl mx-auto rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer flex flex-col items-center justify-center p-10 md:p-8 group",
                 isDragging
                     ? "border-mint-500 bg-mint-900/10 scale-[1.02]"
                     : "border-gray-800 bg-gray-900/50 hover:border-gray-700 hover:bg-gray-900",
@@ -65,23 +65,23 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
 
             {isProcessing ? (
                 <div className="flex flex-col items-center gap-4 text-mint-500 animate-pulse">
-                    <Loader2 className="w-12 h-12 animate-spin" />
-                    <p className="text-lg font-medium">画像を処理中...</p>
+                    <Loader2 className="w-16 h-16 md:w-12 md:h-12 animate-spin" />
+                    <p className="text-xl md:text-lg font-medium">画像を処理中...</p>
                 </div>
             ) : (
-                <div className="text-center space-y-4 relative z-10">
-                    <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors">
+                <div className="text-center space-y-5 md:space-y-4 relative z-10">
+                    <div className="w-24 h-24 md:w-20 md:h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors">
                         {isDragging ? (
-                            <Upload className="w-10 h-10 text-mint-500" />
+                            <Upload className="w-12 h-12 md:w-10 md:h-10 text-mint-500" />
                         ) : (
-                            <ImageIcon className="w-10 h-10 text-gray-500 group-hover:text-gray-300" />
+                            <ImageIcon className="w-12 h-12 md:w-10 md:h-10 text-gray-500 group-hover:text-gray-300" />
                         )}
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-2xl md:text-xl font-bold text-white mb-3 md:mb-2">
                             {isDragging ? "ドロップしてアップロード" : "画像をアップロード"}
                         </h3>
-                        <p className="text-gray-400 max-w-sm mx-auto">
+                        <p className="text-base md:text-sm text-gray-400 max-w-sm mx-auto">
                             分割したい画像をここにドラッグ＆ドロップ、またはクリックして選択。
                             (推奨: JPG, PNG, WEBP)
                         </p>
