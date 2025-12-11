@@ -2,11 +2,19 @@
  * Device detection utilities beyond screen size
  */
 
+// User agent patterns for mobile device detection
+const MOBILE_USER_AGENT_PATTERN = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+
 /**
  * Detect if the device supports touch input
  * This checks multiple indicators beyond just screen size
  */
 export function isTouchDevice(): boolean {
+  // Check if running in a browser environment
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
   // Check for touch events support
   if ('ontouchstart' in window) {
     return true;
@@ -23,7 +31,7 @@ export function isTouchDevice(): boolean {
   }
 
   // Check navigator maxTouchPoints
-  if (navigator.maxTouchPoints > 0) {
+  if (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0) {
     return true;
   }
 
@@ -34,11 +42,16 @@ export function isTouchDevice(): boolean {
  * Detect if the device is likely a mobile phone based on multiple factors
  */
 export function isMobileDevice(): boolean {
-  // User agent check as fallback
-  const userAgent = navigator.userAgent || navigator.vendor || (window as Window & { opera?: string }).opera || '';
+  // Check if running in a browser environment
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return false;
+  }
+
+  // User agent check
+  const userAgent = navigator.userAgent || navigator.vendor || '';
   
   // Check for mobile user agents
-  const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+  const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent.toLowerCase());
   
   // Combine touch detection with screen size
   const isSmallScreen = window.innerWidth < 768;
@@ -51,6 +64,11 @@ export function isMobileDevice(): boolean {
  * Get device type classification
  */
 export function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
+  // Check if running in a browser environment
+  if (typeof window === 'undefined') {
+    return 'desktop';
+  }
+
   const width = window.innerWidth;
   const hasTouch = isTouchDevice();
   
