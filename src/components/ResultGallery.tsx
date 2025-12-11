@@ -27,17 +27,17 @@ export function ResultGallery({ results }: ResultGalleryProps) {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-white">Splitted Images ({results.length})</h3>
+                <h3 className="text-2xl md:text-xl font-bold text-white">Splitted Images ({results.length})</h3>
                 <button
                     onClick={handleDownloadAll}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-5 py-3 md:px-4 md:py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-base md:text-sm font-medium"
                 >
-                    <Download className="w-4 h-4" />
+                    <Download className="w-5 h-5 md:w-4 md:h-4" />
                     Download All
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
                 {results.map((crop) => (
                     <div
                         key={crop.id}
@@ -51,15 +51,15 @@ export function ResultGallery({ results }: ResultGalleryProps) {
                             />
                         </div>
 
-                        <div className="p-3 bg-gray-800 border-t border-gray-700">
-                            <p className="text-xs font-mono text-gray-400 truncate mb-2" title={crop.label}>
+                        <div className="p-4 md:p-3 bg-gray-800 border-t border-gray-700">
+                            <p className="text-sm md:text-xs font-mono text-gray-400 truncate mb-3 md:mb-2" title={crop.label}>
                                 {crop.label}
                             </p>
                             <button
                                 onClick={() => handleDownload(crop)}
-                                className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-mint-600 hover:text-white text-gray-300 rounded mb-1 transition-colors text-xs font-medium"
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 md:px-3 md:py-1.5 bg-gray-700 hover:bg-mint-600 hover:text-white text-gray-300 rounded mb-1 transition-colors text-base md:text-xs font-medium"
                             >
-                                <Download className="w-3 h-3" />
+                                <Download className="w-4 h-4 md:w-3 md:h-3" />
                                 Save
                             </button>
                         </div>
