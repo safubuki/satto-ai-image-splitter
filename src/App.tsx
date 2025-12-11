@@ -105,7 +105,7 @@ function App() {
           <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
             <div className="relative group flex-shrink-0">
               <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full group-hover:bg-mint-500/30 transition-all duration-500" />
-              <img src="icon.png" alt="Logo" className="w-10 h-10 sm:w-10 sm:h-10 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300" />
+              <img src="icon.png" alt="Logo" className="w-10 h-10 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300" />
             </div>
             <div className="flex flex-col justify-center min-w-0">
               <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.2em] text-mint-500 uppercase leading-none mb-0.5 sm:mb-1">
@@ -114,7 +114,7 @@ function App() {
               <h1 className="text-lg sm:text-xl font-bold text-white tracking-wide leading-none mb-0.5 sm:mb-1">
                 サッとAIイメージ分割
               </h1>
-              <p className="text-[10px] sm:text-[11px] text-gray-400 leading-tight opacity-80 hidden xs:block sm:block">
+              <p className="text-[10px] sm:text-[11px] text-gray-400 leading-tight opacity-80 hidden sm:block">
                 画像や漫画のコマをAIで自動検出
               </p>
             </div>
@@ -124,7 +124,7 @@ function App() {
             className="p-2 sm:p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white flex-shrink-0"
             title="API Settings"
           >
-            <Settings className="w-6 h-6 sm:w-6 sm:h-6" />
+            <Settings className="w-6 h-6" />
           </button>
         </div>
       </header>

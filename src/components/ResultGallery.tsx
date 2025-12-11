@@ -33,12 +33,11 @@ export function ResultGallery({ results }: ResultGalleryProps) {
                     className="flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2 md:px-6 md:py-3.5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-lg transition-colors text-xs sm:text-sm md:text-lg font-medium"
                 >
                     <Download className="w-4 h-4 sm:w-4 sm:h-4 md:w-6 md:h-6" />
-                    <span className="hidden xs:inline sm:inline">Download All</span>
-                    <span className="xs:hidden sm:hidden">全保存</span>
+                    <span className="sm:inline">Download All</span>
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 {results.map((crop) => (
                     <div
                         key={crop.id}
