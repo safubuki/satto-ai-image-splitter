@@ -47,11 +47,11 @@ export function isMobileDevice(): boolean {
     return false;
   }
 
-  // User agent check
-  const userAgent = navigator.userAgent || navigator.vendor || '';
+  // User agent check with safe property access
+  const userAgent = (navigator.userAgent || (navigator as Navigator & { vendor?: string }).vendor || '').toLowerCase();
   
   // Check for mobile user agents
-  const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent.toLowerCase());
+  const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent);
   
   // Combine touch detection with screen size
   const isSmallScreen = window.innerWidth < 768;
