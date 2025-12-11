@@ -35,7 +35,7 @@ export function isTouchDevice(): boolean {
  */
 export function isMobileDevice(): boolean {
   // User agent check as fallback
-  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+  const userAgent = navigator.userAgent || navigator.vendor || (window as Window & { opera?: string }).opera || '';
   
   // Check for mobile user agents
   const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
