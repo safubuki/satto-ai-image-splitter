@@ -9,7 +9,7 @@ export function ImageOverlay({ imageSrc, analysisData }: ImageOverlayProps) {
     if (!imageSrc) return null;
 
     return (
-        <div className="relative w-full h-full rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-xl">
+        <div className="relative w-full h-full rounded-2xl sm:rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-xl">
             <img
                 src={imageSrc}
                 alt="Original"
