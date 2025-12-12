@@ -60,7 +60,7 @@ export function detectMobile(): boolean {
   const hasTouch = isTouchDevice();
   
   // 3. User agent check
-  const userAgent = (navigator.userAgent || (navigator as Navigator & { vendor?: string }).vendor || '').toLowerCase();
+  const userAgent = (navigator.userAgent || '').toLowerCase();
   const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent);
   
   // Mobile if: small screen, OR (touch + mobile UA)

@@ -7,6 +7,7 @@ import { analyzeImage, type AnalyzeResponse } from './lib/geminiSplitter';
 import { processImageCrops, fileToBase64, type CropResult } from './lib/imageProcessor';
 import { saveHistory } from './lib/db';
 import { useMobile } from './hooks/useMobile';
+import { cn } from './lib/utils';
 import { Settings, RotateCcw, Upload } from 'lucide-react';
 
 function App() {
@@ -105,7 +106,10 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans ${isMobile && originalImage ? 'pb-20' : ''}`}>
+    <div className={cn(
+      "min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans",
+      isMobile && originalImage && "pb-20"
+    )}>
       {/* Hidden file input for mobile bottom action bar */}
       <input
         type="file"
