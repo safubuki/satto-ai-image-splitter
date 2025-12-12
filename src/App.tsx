@@ -101,35 +101,35 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans">
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="container mx-auto px-4 md:px-4 h-28 md:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4 md:gap-4">
-            <div className="relative group">
+        <div className="container mx-auto px-3 sm:px-4 h-auto py-3 sm:py-0 sm:h-20 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+            <div className="relative group flex-shrink-0">
               <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full group-hover:bg-mint-500/30 transition-all duration-500" />
-              <img src="icon.png" alt="Logo" className="w-14 h-14 md:w-10 md:h-10 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300" />
+              <img src="icon.png" alt="Logo" className="w-10 h-10 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300" />
             </div>
-            <div className="flex flex-col justify-center">
-              <span className="text-xs md:text-[10px] font-bold tracking-[0.2em] text-mint-500 uppercase leading-none mb-1">
-                AI-POWERED EASY IMAGE SPLITTER
+            <div className="flex flex-col justify-center min-w-0">
+              <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.2em] text-mint-500 uppercase leading-none mb-0.5 sm:mb-1">
+                AI IMAGE SPLITTER
               </span>
-              <h1 className="text-3xl md:text-xl font-bold text-white tracking-wide leading-none mb-1">
+              <h1 className="text-lg sm:text-xl font-bold text-white tracking-wide leading-none mb-0.5 sm:mb-1">
                 サッとAIイメージ分割
               </h1>
-              <p className="text-sm md:text-[11px] text-gray-400 leading-tight opacity-80">
-                画像や漫画のコマをAIで自動検出。画像をそれぞれ簡単に分割保存。
+              <p className="text-[10px] sm:text-[11px] text-gray-400 leading-tight opacity-80 hidden sm:block">
+                画像や漫画のコマをAIで自動検出
               </p>
             </div>
           </div>
           <button
             onClick={() => setIsKeyModalOpen(true)}
-            className="p-4 md:p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
+            className="p-2 sm:p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white flex-shrink-0"
             title="API Settings"
           >
-            <Settings className="w-8 h-8 md:w-6 md:h-6" />
+            <Settings className="w-6 h-6" />
           </button>
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
+      <main className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
         <ApiKeyModal
           isOpen={isKeyModalOpen}
           onSave={handleSaveKey}
@@ -140,47 +140,47 @@ function App() {
         />
 
         {!originalImage ? (
-          <div className="py-12">
+          <div className="py-6 sm:py-12">
             <ImageUploader onImageSelect={handleImageSelect} isProcessing={isProcessing} />
 
             {!apiKey && (
               <div
                 onClick={() => setIsKeyModalOpen(true)}
-                className="mt-6 mx-auto max-w-xl p-6 md:p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-4 md:gap-3 cursor-pointer hover:bg-red-500/20 transition-all group animate-bounce-subtle"
+                className="mt-4 sm:mt-6 mx-auto max-w-xl p-4 sm:p-6 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-red-500/20 transition-all group animate-bounce-subtle"
               >
-                <div className="p-4 md:p-2 bg-red-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                  <Settings className="w-7 h-7 md:w-5 md:h-5 text-red-400" />
+                <div className="p-2 sm:p-4 bg-red-500/20 rounded-lg group-hover:scale-110 transition-transform flex-shrink-0">
+                  <Settings className="w-5 h-5 sm:w-7 sm:h-7 text-red-400" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-red-400 text-lg md:text-sm">⚠️ APIキーが設定されていません</h3>
-                  <p className="text-base md:text-xs text-red-300/80">ここをクリックして、Google Gemini APIキーを設定してください。</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-red-400 text-sm sm:text-lg">⚠️ APIキーが未設定</h3>
+                  <p className="text-xs sm:text-base text-red-300/80">タップしてAPIキーを設定</p>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-4 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl md:text-lg font-medium text-gray-300">解析結果</h2>
+              <h2 className="text-lg sm:text-2xl font-medium text-gray-300">解析結果</h2>
             </div>
 
             {error && (
-              <div className="p-6 md:p-4 bg-red-950/50 border border-red-900/50 text-red-200 rounded-lg text-lg md:text-sm">
+              <div className="p-3 sm:p-6 bg-red-950/50 border border-red-900/50 text-red-200 rounded-lg text-sm sm:text-lg">
                 Error: {error}
               </div>
             )}
 
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
               {/* Left: Visualization */}
-              <div className="space-y-4">
-                <p className="text-xl md:text-base text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
+              <div className="space-y-3 sm:space-y-4">
+                <p className="text-sm sm:text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
                 <div className="relative rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
                   <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
                   {isProcessing && (
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-lg z-10">
                       <div className="text-center">
-                        <div className="animate-spin w-12 h-12 md:w-8 md:h-8 border-2 border-mint-500 border-t-transparent rounded-full mx-auto mb-2" />
-                        <p className="text-mint-400 font-medium animate-pulse text-xl md:text-base">Geminiで解析中...</p>
+                        <div className="animate-spin w-8 h-8 sm:w-12 sm:h-12 border-2 border-mint-500 border-t-transparent rounded-full mx-auto mb-2" />
+                        <p className="text-mint-400 font-medium animate-pulse text-base sm:text-xl">Geminiで解析中...</p>
                       </div>
                     </div>
                   )}
@@ -188,7 +188,7 @@ function App() {
                 <div className="flex justify-end">
                   <button
                     onClick={handleReset}
-                    className="flex items-center gap-2 px-10 py-4 md:px-6 md:py-2.5 text-lg md:text-sm font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 group"
+                    className="flex items-center gap-2 px-6 py-2.5 sm:px-10 sm:py-4 text-sm sm:text-lg font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 group"
                     title="Clear and start over"
                   >
                     <span className="group-hover:text-red-100 transition-colors">Clear & New</span>
@@ -197,12 +197,12 @@ function App() {
               </div>
 
               {/* Right: Results */}
-              <div className="space-y-4">
-                <p className="text-xl md:text-base text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
+              <div className="space-y-3 sm:space-y-4">
+                <p className="text-sm sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
                 {cropResults.length > 0 ? (
                   <ResultGallery results={cropResults} />
                 ) : (
-                  <div className="h-full min-h-[400px] border-2 border-gray-800 border-dashed rounded-xl flex items-center justify-center text-gray-600 text-2xl md:text-lg">
+                  <div className="h-full min-h-[300px] sm:min-h-[400px] border-2 border-gray-800 border-dashed rounded-xl flex items-center justify-center text-gray-600 text-lg sm:text-2xl">
                     {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
                   </div>
                 )}
