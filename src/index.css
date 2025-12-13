@@ -17,6 +17,8 @@
 :root {
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
+  /* Minimum touch target size (Apple Human Interface Guidelines recommend 44px) */
+  --min-touch-target: 44px;
 }
 
 .dark {
@@ -33,9 +35,14 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Mobile-specific adjustments for smartphones */
-@media (max-width: 768px) {
-  /* Increase base font size for better readability on mobile */
+/* 
+ * Mobile and touch device optimizations
+ * Applied when either:
+ * - Screen width is <= 768px (mobile breakpoint)
+ * - Device has coarse pointer (touch screen)
+ */
+@media (max-width: 768px), (pointer: coarse) {
+  /* Increase base font size for better readability */
   html {
     font-size: 16px;
   }
@@ -45,7 +52,7 @@ body {
     line-height: 1.6;
   }
   
-  /* Ensure touch targets are appropriately sized (Apple recommends 44px minimum) */
+  /* Ensure touch targets are appropriately sized */
   button, 
   a,
   input[type="text"],
@@ -54,10 +61,10 @@ body {
   input[type="file"],
   select,
   textarea {
-    min-height: 44px;
+    min-height: var(--min-touch-target);
   }
   
-  /* Larger tap targets for interactive elements */
+  /* Improve touch interaction */
   button,
   a {
     touch-action: manipulation;
@@ -74,28 +81,11 @@ body {
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Form input improvements for mobile */
+  /* Form input improvements - prevents iOS zoom on focus */
   input,
   select,
   textarea {
-    font-size: 16px; /* Prevents iOS zoom on focus */
-  }
-}
-
-/* Touch device detection (uses pointer: coarse for touch screens) */
-@media (pointer: coarse) {
-  /* Increase touch target sizes for all interactive elements */
-  button,
-  a,
-  input,
-  select,
-  textarea {
-    min-height: 44px;
-  }
-  
-  /* Disable hover effects that don't work well on touch */
-  .touch-device-no-hover:hover {
-    transform: none;
+    font-size: 16px;
   }
 }
 

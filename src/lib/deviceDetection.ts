@@ -93,7 +93,7 @@ export function detectMobile(): boolean {
   // The portrait + touch combo helps detect phones even if screen width is >= 768px in landscape
   const isSmallMediumScreen = window.innerWidth < 1024;
   
-  return isSmallScreen || (hasTouch && isMobileUA) || (hasTouch && isPortrait && isSmallMediumScreen && isMobileUA);
+  return isSmallScreen || (hasTouch && isMobileUA) || (hasTouch && isPortrait && isSmallMediumScreen);
 }
 
 /**
