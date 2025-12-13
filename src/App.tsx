@@ -8,7 +8,7 @@ import { processImageCrops, fileToBase64, type CropResult } from './lib/imagePro
 import { saveHistory } from './lib/db';
 import { useMobile } from './hooks/useMobile';
 import { cn } from './lib/utils';
-import { Settings, RotateCcw, Upload } from 'lucide-react';
+import { Settings, RotateCcw, Download } from 'lucide-react';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
@@ -203,10 +203,6 @@ function App() {
         ) : isMobile ? (
           /* Mobile: 1-column layout */
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-center">
-              <h2 className="text-5xl font-bold text-gray-300">解析結果</h2>
-            </div>
-
             {error && (
               <div className="p-6 bg-red-950/50 border border-red-900/50 text-red-200 rounded-2xl text-3xl">
                 Error: {error}
@@ -214,8 +210,11 @@ function App() {
             )}
 
             {/* Mobile: Single column - Original image first */}
-            <div className="space-y-6">
-              <p className="text-3xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-5xl font-bold text-white mb-2">解析結果</h3>
+                <p className="text-2xl text-gray-500">元画像 / 解析オーバーレイ</p>
+              </div>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
                 <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
                 {isProcessing && (
@@ -230,8 +229,11 @@ function App() {
             </div>
 
             {/* Mobile: Results section */}
-            <div className="space-y-6">
-              <p className="text-3xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-5xl font-bold text-white mb-2">分割画像 ({cropResults.length})</h3>
+                <p className="text-2xl text-gray-500">分割された画像</p>
+              </div>
               {cropResults.length > 0 ? (
                 <ResultGallery results={cropResults} isMobile={true} />
               ) : (
@@ -318,12 +320,23 @@ function App() {
               <span>クリア</span>
             </button>
             <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isProcessing}
-              className="flex-1 flex items-center justify-center gap-4 px-8 py-7 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-2xl transition-colors text-3xl font-bold"
+              onClick={() => {
+                cropResults.forEach((crop, i) => {
+                  setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = crop.url;
+                    link.download = `${crop.label.replace(/\s+/g, '_')}_${crop.id.slice(0, 4)}.jpg`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }, i * 300);
+                });
+              }}
+              disabled={cropResults.length === 0}
+              className="flex-[1.5] flex items-center justify-center gap-4 px-8 py-7 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-2xl transition-colors text-3xl font-bold shadow-lg shadow-mint-500/20"
             >
-              <Upload className="w-10 h-10" />
-              <span>新しい画像</span>
+              <Download className="w-10 h-10" />
+              <span>全てダウンロード</span>
             </button>
           </div>
         </div>

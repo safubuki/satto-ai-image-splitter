@@ -27,27 +27,25 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
     };
 
     return (
-        <div className={cn("space-y-6", isMobile && "space-y-12")}>
-            <div className="flex items-center justify-between gap-4">
-                <h3 className={cn(
-                    "font-bold text-white",
-                    isMobile ? "text-5xl" : "text-xl md:text-2xl"
-                )}>
-                    分割画像 ({results.length})
-                </h3>
-                <button
-                    onClick={handleDownloadAll}
-                    className={cn(
-                        "flex items-center bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white transition-colors font-bold",
-                        isMobile
-                            ? "gap-4 px-10 py-7 rounded-2xl text-3xl"
-                            : "gap-2 px-4 py-2 rounded-lg text-sm"
-                    )}
-                >
-                    <Download className={isMobile ? "w-10 h-10" : "w-4 h-4"} />
-                    <span>すべて保存</span>
-                </button>
-            </div>
+        <div className={cn("space-y-6", isMobile && "space-y-8")}>
+            {/* Desktop only: title and download all button */}
+            {!isMobile && (
+                <div className="flex items-center justify-between gap-4">
+                    <div>
+                        <h3 className="font-bold text-white text-2xl mb-1">
+                            分割画像 ({results.length})
+                        </h3>
+                        <p className="text-sm text-gray-500">分割された画像</p>
+                    </div>
+                    <button
+                        onClick={handleDownloadAll}
+                        className="flex items-center gap-2 px-5 py-3 rounded-lg text-sm bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white transition-colors font-bold shadow-lg shadow-mint-500/20"
+                    >
+                        <Download className="w-5 h-5" />
+                        <span>全てダウンロード</span>
+                    </button>
+                </div>
+            )}
 
             {/* Mobile: 1 column, Desktop: 2 columns */}
             <div className={cn(
