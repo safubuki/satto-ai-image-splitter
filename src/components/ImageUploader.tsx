@@ -5,9 +5,10 @@ import { Upload, Image as ImageIcon, Loader2 } from 'lucide-react';
 interface ImageUploaderProps {
     onImageSelect: (file: File) => void;
     isProcessing: boolean;
+    isMobile?: boolean;
 }
 
-export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProps) {
+export function ImageUploader({ onImageSelect, isProcessing, isMobile = false }: ImageUploaderProps) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,7 +45,10 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={cn(
-                "relative w-full min-h-[60vh] sm:min-h-0 sm:aspect-video max-w-2xl mx-auto rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 group",
+                "relative w-full max-w-2xl mx-auto rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer flex flex-col items-center justify-center group",
+                isMobile
+                    ? "min-h-[70vh] p-8"
+                    : "aspect-video p-8 md:p-12",
                 isDragging
                     ? "border-mint-500 bg-mint-900/10 scale-[1.02]"
                     : "border-gray-800 bg-gray-900/50 hover:border-gray-700 hover:bg-gray-900 active:bg-gray-800",
@@ -64,27 +68,58 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
             <div className="absolute inset-0 bg-gradient-to-tr from-mint-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
             {isProcessing ? (
-                <div className="flex flex-col items-center gap-6 sm:gap-4 text-mint-500 animate-pulse">
-                    <Loader2 className="w-20 h-20 sm:w-16 sm:h-16 animate-spin" />
-                    <p className="text-2xl sm:text-xl font-bold">画像を処理中...</p>
+                <div className={cn(
+                    "flex flex-col items-center text-mint-500 animate-pulse",
+                    isMobile ? "gap-8" : "gap-4"
+                )}>
+                    <Loader2 className={cn(
+                        "animate-spin",
+                        isMobile ? "w-24 h-24" : "w-16 h-16"
+                    )} />
+                    <p className={cn(
+                        "font-bold",
+                        isMobile ? "text-3xl" : "text-xl"
+                    )}>画像を処理中...</p>
                 </div>
             ) : (
-                <div className="text-center space-y-10 sm:space-y-6 relative z-10 w-full px-4">
-                    <div className="w-32 h-32 sm:w-20 sm:h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors shadow-lg shadow-black/20">
+                <div className={cn(
+                    "text-center relative z-10 w-full px-4",
+                    isMobile ? "space-y-12" : "space-y-6"
+                )}>
+                    <div className={cn(
+                        "bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors shadow-lg shadow-black/20",
+                        isMobile ? "w-36 h-36" : "w-20 h-20"
+                    )}>
                         {isDragging ? (
-                            <Upload className="w-16 h-16 sm:w-10 sm:h-10 text-mint-500" />
+                            <Upload className={cn(
+                                "text-mint-500",
+                                isMobile ? "w-18 h-18" : "w-10 h-10"
+                            )} style={isMobile ? { width: 72, height: 72 } : undefined} />
                         ) : (
-                            <ImageIcon className="w-16 h-16 sm:w-10 sm:h-10 text-gray-500 group-hover:text-gray-300" />
+                            <ImageIcon className={cn(
+                                "text-gray-500 group-hover:text-gray-300",
+                                isMobile ? "w-18 h-18" : "w-10 h-10"
+                            )} style={isMobile ? { width: 72, height: 72 } : undefined} />
                         )}
                     </div>
                     <div>
-                        <h3 className="text-3xl sm:text-2xl font-bold text-white mb-6 sm:mb-3">
+                        <h3 className={cn(
+                            "font-bold text-white",
+                            isMobile ? "text-4xl mb-8" : "text-2xl mb-3"
+                        )}>
                             {isDragging ? "ドロップしてアップロード" : "画像をアップロード"}
                         </h3>
-                        <p className="text-xl sm:text-base text-gray-400 max-w-sm mx-auto leading-relaxed">
-                            タップして画像を選択<span className="hidden sm:inline">、またはドラッグ＆ドロップ</span>
-                            <br className="sm:hidden" />
-                            <span className="text-lg sm:text-sm text-gray-500 mt-3 block">(JPG, PNG, WEBP)</span>
+                        <p className={cn(
+                            "text-gray-400 max-w-sm mx-auto leading-relaxed",
+                            isMobile ? "text-2xl" : "text-base"
+                        )}>
+                            タップして画像を選択
+                            {!isMobile && <span>、またはドラッグ＆ドロップ</span>}
+                            <br />
+                            <span className={cn(
+                                "text-gray-500 block",
+                                isMobile ? "text-xl mt-4" : "text-sm mt-2"
+                            )}>(JPG, PNG, WEBP)</span>
                         </p>
                     </div>
                 </div>

@@ -162,7 +162,7 @@ function App() {
 
         {!originalImage ? (
           <div className="py-4 sm:py-12">
-            <ImageUploader onImageSelect={handleImageSelect} isProcessing={isProcessing} />
+            <ImageUploader onImageSelect={handleImageSelect} isProcessing={isProcessing} isMobile={isMobile} />
 
             {!apiKey && (
               <div
@@ -212,7 +212,7 @@ function App() {
             <div className="space-y-4">
               <p className="text-base text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
               {cropResults.length > 0 ? (
-                <ResultGallery results={cropResults} />
+                <ResultGallery results={cropResults} isMobile={true} />
               ) : (
                 <div className="min-h-[200px] border-2 border-gray-800 border-dashed rounded-2xl flex items-center justify-center text-gray-600 text-lg">
                   {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
@@ -264,7 +264,7 @@ function App() {
               <div className="space-y-4 sm:space-y-4">
                 <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
                 {cropResults.length > 0 ? (
-                  <ResultGallery results={cropResults} />
+                  <ResultGallery results={cropResults} isMobile={false} />
                 ) : (
                   <div className="h-full min-h-[250px] sm:min-h-[400px] border-2 border-gray-800 border-dashed rounded-2xl sm:rounded-xl flex items-center justify-center text-gray-600 text-lg sm:text-2xl">
                     {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
