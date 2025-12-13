@@ -122,30 +122,51 @@ function App() {
       />
 
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="container mx-auto px-4 h-auto py-4 sm:py-0 sm:h-20 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+        <div className={cn(
+          "container mx-auto px-4 flex items-center justify-between gap-4",
+          isMobile ? "py-5" : "h-20"
+        )}>
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             <div className="relative group flex-shrink-0">
               <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full group-hover:bg-mint-500/30 transition-all duration-500" />
-              <img src="icon.png" alt="Logo" className="w-12 h-12 sm:w-10 sm:h-10 relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300" />
+              <img
+                src="icon.png"
+                alt="Logo"
+                className={cn(
+                  "relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300",
+                  isMobile ? "w-16 h-16" : "w-10 h-10"
+                )}
+              />
             </div>
             <div className="flex flex-col justify-center min-w-0">
-              <span className="text-[10px] sm:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.2em] text-mint-500 uppercase leading-none mb-1">
+              <span className={cn(
+                "font-bold tracking-[0.15em] text-mint-500 uppercase leading-none mb-1",
+                isMobile ? "text-sm" : "text-[10px]"
+              )}>
                 AI IMAGE SPLITTER
               </span>
-              <h1 className="text-xl sm:text-xl font-bold text-white tracking-wide leading-none mb-1">
+              <h1 className={cn(
+                "font-bold text-white tracking-wide leading-none mb-1",
+                isMobile ? "text-3xl" : "text-xl"
+              )}>
                 サッとAIイメージ分割
               </h1>
-              <p className="text-[11px] sm:text-[11px] text-gray-400 leading-tight opacity-80 hidden sm:block">
-                画像や漫画のコマをAIで自動検出
-              </p>
+              {!isMobile && (
+                <p className="text-[11px] text-gray-400 leading-tight opacity-80">
+                  画像や漫画のコマをAIで自動検出
+                </p>
+              )}
             </div>
           </div>
           <button
             onClick={() => setIsKeyModalOpen(true)}
-            className="p-3 sm:p-2 hover:bg-gray-800 rounded-xl sm:rounded-lg transition-colors text-gray-400 hover:text-white flex-shrink-0 active:bg-gray-700"
+            className={cn(
+              "hover:bg-gray-800 transition-colors text-gray-400 hover:text-white flex-shrink-0 active:bg-gray-700",
+              isMobile ? "p-4 rounded-xl" : "p-2 rounded-lg"
+            )}
             title="API Settings"
           >
-            <Settings className="w-8 h-8 sm:w-6 sm:h-6" />
+            <Settings className={isMobile ? "w-10 h-10" : "w-6 h-6"} />
           </button>
         </div>
       </header>
@@ -181,27 +202,27 @@ function App() {
           </div>
         ) : isMobile ? (
           /* Mobile: 1-column layout */
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-medium text-gray-300">解析結果</h2>
+              <h2 className="text-3xl font-bold text-gray-300">解析結果</h2>
             </div>
 
             {error && (
-              <div className="p-4 bg-red-950/50 border border-red-900/50 text-red-200 rounded-xl text-base">
+              <div className="p-5 bg-red-950/50 border border-red-900/50 text-red-200 rounded-xl text-xl">
                 Error: {error}
               </div>
             )}
 
             {/* Mobile: Single column - Original image first */}
-            <div className="space-y-4">
-              <p className="text-base text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
+            <div className="space-y-5">
+              <p className="text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
                 <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
                 {isProcessing && (
                   <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-2xl z-10">
                     <div className="text-center">
-                      <div className="animate-spin w-12 h-12 border-2 border-mint-500 border-t-transparent rounded-full mx-auto mb-3" />
-                      <p className="text-mint-400 font-medium animate-pulse text-lg">Geminiで解析中...</p>
+                      <div className="animate-spin w-16 h-16 border-3 border-mint-500 border-t-transparent rounded-full mx-auto mb-4" />
+                      <p className="text-mint-400 font-bold animate-pulse text-2xl">Geminiで解析中...</p>
                     </div>
                   </div>
                 )}
@@ -209,12 +230,12 @@ function App() {
             </div>
 
             {/* Mobile: Results section */}
-            <div className="space-y-4">
-              <p className="text-base text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
+            <div className="space-y-5">
+              <p className="text-xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
               {cropResults.length > 0 ? (
                 <ResultGallery results={cropResults} isMobile={true} />
               ) : (
-                <div className="min-h-[200px] border-2 border-gray-800 border-dashed rounded-2xl flex items-center justify-center text-gray-600 text-lg">
+                <div className="min-h-[200px] border-2 border-gray-800 border-dashed rounded-2xl flex items-center justify-center text-gray-600 text-2xl">
                   {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
                 </div>
               )}
@@ -288,20 +309,20 @@ function App() {
       {/* Mobile: Fixed bottom action bar when viewing results */}
       {isMobile && originalImage && (
         <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-50 pb-safe">
-          <div className="flex items-center justify-around px-4 py-3 gap-2">
+          <div className="flex items-center justify-around px-4 py-4 gap-3">
             <button
               onClick={handleReset}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-sm font-medium"
+              className="flex-1 flex items-center justify-center gap-3 px-6 py-5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-2xl transition-colors text-xl font-bold"
             >
-              <RotateCcw className="w-5 h-5" />
-              <span>Clear</span>
+              <RotateCcw className="w-7 h-7" />
+              <span>クリア</span>
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isProcessing}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-xl transition-colors text-sm font-medium"
+              className="flex-1 flex items-center justify-center gap-3 px-6 py-5 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-2xl transition-colors text-xl font-bold"
             >
-              <Upload className="w-5 h-5" />
+              <Upload className="w-7 h-7" />
               <span>新しい画像</span>
             </button>
           </div>

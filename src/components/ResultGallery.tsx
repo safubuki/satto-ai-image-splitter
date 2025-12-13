@@ -27,24 +27,24 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
     };
 
     return (
-        <div className={cn("space-y-6", isMobile && "space-y-8")}>
-            <div className="flex items-center justify-between gap-3">
+        <div className={cn("space-y-6", isMobile && "space-y-10")}>
+            <div className="flex items-center justify-between gap-4">
                 <h3 className={cn(
                     "font-bold text-white",
-                    isMobile ? "text-2xl" : "text-xl md:text-2xl"
+                    isMobile ? "text-3xl" : "text-xl md:text-2xl"
                 )}>
                     分割画像 ({results.length})
                 </h3>
                 <button
                     onClick={handleDownloadAll}
                     className={cn(
-                        "flex items-center bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white transition-colors font-medium",
+                        "flex items-center bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white transition-colors font-bold",
                         isMobile
-                            ? "gap-3 px-6 py-4 rounded-xl text-lg"
+                            ? "gap-3 px-8 py-5 rounded-2xl text-xl"
                             : "gap-2 px-4 py-2 rounded-lg text-sm"
                     )}
                 >
-                    <Download className={isMobile ? "w-6 h-6" : "w-4 h-4"} />
+                    <Download className={isMobile ? "w-7 h-7" : "w-4 h-4"} />
                     <span>すべて保存</span>
                 </button>
             </div>
@@ -88,11 +88,11 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
                                 className={cn(
                                     "w-full flex items-center justify-center bg-gray-700 hover:bg-mint-600 active:bg-mint-700 hover:text-white text-gray-300 transition-colors font-bold",
                                     isMobile
-                                        ? "gap-3 px-6 py-5 rounded-xl text-lg"
+                                        ? "gap-3 px-8 py-6 rounded-2xl text-xl"
                                         : "gap-2 px-4 py-2 rounded text-sm"
                                 )}
                             >
-                                <Download className={isMobile ? "w-6 h-6" : "w-4 h-4"} />
+                                <Download className={isMobile ? "w-7 h-7" : "w-4 h-4"} />
                                 保存
                             </button>
                         </div>
