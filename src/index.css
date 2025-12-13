@@ -33,11 +33,34 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Mobile-specific adjustments */
+/* Mobile-specific adjustments for smartphones */
 @media (max-width: 768px) {
-  /* Ensure touch targets are appropriately sized */
-  button, a {
+  /* Increase base font size for better readability on mobile */
+  html {
+    font-size: 16px;
+  }
+  
+  body {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  /* Ensure touch targets are appropriately sized (Apple recommends 44px minimum) */
+  button, 
+  a,
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="file"],
+  select,
+  textarea {
     min-height: 44px;
+  }
+  
+  /* Larger tap targets for interactive elements */
+  button,
+  a {
+    touch-action: manipulation;
   }
   
   /* Prevent text selection on interactive elements for better touch experience */
@@ -49,5 +72,38 @@ body {
   /* Improve scrolling performance on mobile */
   .scroll-container {
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Form input improvements for mobile */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Touch device detection (uses pointer: coarse for touch screens) */
+@media (pointer: coarse) {
+  /* Increase touch target sizes for all interactive elements */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+  
+  /* Disable hover effects that don't work well on touch */
+  .touch-device-no-hover:hover {
+    transform: none;
+  }
+}
+
+/* Portrait mode specific adjustments */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Optimize layout for portrait smartphone usage */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }

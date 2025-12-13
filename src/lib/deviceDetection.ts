@@ -1,6 +1,12 @@
 /**
  * Device detection utilities beyond screen size
  * Follows the pattern from satto-receipt for responsive mobile UI detection
+ * 
+ * Detection criteria:
+ * - Screen size (width < 768px)
+ * - Touch panel capability
+ * - Android/iOS device detection via user agent
+ * - Aspect ratio (portrait mode)
  */
 
 // User agent patterns for mobile device detection
@@ -8,6 +14,9 @@ const MOBILE_USER_AGENT_PATTERN = /android|webos|iphone|ipad|ipod|blackberry|iem
 
 // Mobile breakpoint width (consistent with Tailwind's sm breakpoint)
 const MOBILE_BREAKPOINT = 768;
+
+// Portrait aspect ratio threshold (height > width means portrait)
+const PORTRAIT_ASPECT_RATIO = 1.0;
 
 /**
  * Detect if the device supports touch input
@@ -43,8 +52,22 @@ export function isTouchDevice(): boolean {
 }
 
 /**
+ * Detect if the device is in portrait mode (height > width)
+ * This is useful for detecting smartphones being held vertically
+ */
+export function isPortraitMode(): boolean {
+  // SSR: Default to portrait (mobile-first approach)
+  if (typeof window === 'undefined') {
+    return true;
+  }
+
+  const aspectRatio = window.innerHeight / window.innerWidth;
+  return aspectRatio > PORTRAIT_ASPECT_RATIO;
+}
+
+/**
  * Detect if the current device should use mobile UI
- * Uses window.innerWidth, touch detection, and user agent
+ * Uses window.innerWidth, touch detection, user agent, and aspect ratio
  * SSR defaults to mobile for mobile-first approach
  */
 export function detectMobile(): boolean {
@@ -63,8 +86,14 @@ export function detectMobile(): boolean {
   const userAgent = (navigator.userAgent || '').toLowerCase();
   const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent);
   
-  // Mobile if: small screen, OR (touch + mobile UA)
-  return isSmallScreen || (hasTouch && isMobileUA);
+  // 4. Portrait mode check (typical for smartphones)
+  const isPortrait = isPortraitMode();
+  
+  // Mobile if: small screen, OR (touch + mobile UA), OR (touch + portrait on small-medium screens)
+  // The portrait + touch combo helps detect phones even if screen width is >= 768px in landscape
+  const isSmallMediumScreen = window.innerWidth < 1024;
+  
+  return isSmallScreen || (hasTouch && isMobileUA) || (hasTouch && isPortrait && isSmallMediumScreen && isMobileUA);
 }
 
 /**
