@@ -30,14 +30,14 @@ export function ResultGallery({ results }: ResultGalleryProps) {
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">分割画像 ({results.length})</h3>
                 <button
                     onClick={handleDownloadAll}
-                    className="flex items-center gap-2 sm:gap-2 px-4 py-3 sm:px-4 sm:py-2 md:px-6 md:py-3.5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl sm:rounded-lg transition-colors text-sm sm:text-sm md:text-lg font-medium"
+                    className="flex items-center gap-2 sm:gap-2 px-6 py-4 sm:px-4 sm:py-2 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl sm:rounded-lg transition-colors text-base sm:text-sm font-medium"
                 >
-                    <Download className="w-5 h-5 sm:w-4 sm:h-4 md:w-6 md:h-6" />
+                    <Download className="w-5 h-5 sm:w-4 sm:h-4" />
                     <span className="sm:inline">Download All</span>
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 sm:gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-6">
                 {results.map((crop) => (
                     <div
                         key={crop.id}
@@ -51,15 +51,15 @@ export function ResultGallery({ results }: ResultGalleryProps) {
                             />
                         </div>
 
-                        <div className="p-3 sm:p-3 md:p-5 bg-gray-800 border-t border-gray-700">
-                            <p className="text-xs sm:text-xs md:text-base font-mono text-gray-400 truncate mb-3 sm:mb-2 md:mb-4" title={crop.label}>
+                        <div className="p-4 sm:p-4 bg-gray-800 border-t border-gray-700">
+                            <p className="text-base sm:text-sm font-mono text-gray-400 truncate mb-4 sm:mb-3" title={crop.label}>
                                 {crop.label}
                             </p>
                             <button
                                 onClick={() => handleDownload(crop)}
-                                className="w-full flex items-center justify-center gap-2 sm:gap-2 px-3 py-3 sm:px-3 sm:py-1.5 md:px-5 md:py-3 bg-gray-700 hover:bg-mint-600 active:bg-mint-700 hover:text-white text-gray-300 rounded-xl sm:rounded mb-1 transition-colors text-sm sm:text-xs md:text-lg font-medium"
+                                className="w-full flex items-center justify-center gap-3 sm:gap-2 px-4 py-4 sm:py-2 bg-gray-700 hover:bg-mint-600 active:bg-mint-700 hover:text-white text-gray-300 rounded-xl sm:rounded mb-1 transition-colors text-base sm:text-xs font-bold"
                             >
-                                <Download className="w-4 h-4 sm:w-3 sm:h-3 md:w-5 md:h-5" />
+                                <Download className="w-5 h-5 sm:w-4 sm:h-4" />
                                 Save
                             </button>
                         </div>
