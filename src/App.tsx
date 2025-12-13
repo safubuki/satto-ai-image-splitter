@@ -124,9 +124,9 @@ function App() {
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
         <div className={cn(
           "container mx-auto px-4 flex items-center justify-between gap-4",
-          isMobile ? "py-5" : "h-20"
+          isMobile ? "py-6" : "h-20"
         )}>
-          <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="flex items-center gap-5 flex-1 min-w-0">
             <div className="relative group flex-shrink-0">
               <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full group-hover:bg-mint-500/30 transition-all duration-500" />
               <img
@@ -134,25 +134,25 @@ function App() {
                 alt="Logo"
                 className={cn(
                   "relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300",
-                  isMobile ? "w-16 h-16" : "w-10 h-10"
+                  isMobile ? "w-24 h-24" : "w-10 h-10"
                 )}
               />
             </div>
             <div className="flex flex-col justify-center min-w-0">
               <span className={cn(
-                "font-bold tracking-[0.15em] text-mint-500 uppercase leading-none mb-1",
-                isMobile ? "text-sm" : "text-[10px]"
+                "font-bold tracking-[0.15em] text-mint-500 uppercase leading-none mb-2",
+                isMobile ? "text-xl" : "text-[10px]"
               )}>
                 AI IMAGE SPLITTER
               </span>
               <h1 className={cn(
-                "font-bold text-white tracking-wide leading-none mb-1",
-                isMobile ? "text-3xl" : "text-xl"
+                "font-bold text-white tracking-wide leading-none",
+                isMobile ? "text-5xl" : "text-xl"
               )}>
                 サッとAIイメージ分割
               </h1>
               {!isMobile && (
-                <p className="text-[11px] text-gray-400 leading-tight opacity-80">
+                <p className="text-[11px] text-gray-400 leading-tight opacity-80 mt-1">
                   画像や漫画のコマをAIで自動検出
                 </p>
               )}
@@ -162,11 +162,11 @@ function App() {
             onClick={() => setIsKeyModalOpen(true)}
             className={cn(
               "hover:bg-gray-800 transition-colors text-gray-400 hover:text-white flex-shrink-0 active:bg-gray-700",
-              isMobile ? "p-4 rounded-xl" : "p-2 rounded-lg"
+              isMobile ? "p-5 rounded-2xl" : "p-2 rounded-lg"
             )}
             title="API Settings"
           >
-            <Settings className={isMobile ? "w-10 h-10" : "w-6 h-6"} />
+            <Settings className={isMobile ? "w-14 h-14" : "w-6 h-6"} />
           </button>
         </div>
       </header>
@@ -202,27 +202,27 @@ function App() {
           </div>
         ) : isMobile ? (
           /* Mobile: 1-column layout */
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center">
-              <h2 className="text-3xl font-bold text-gray-300">解析結果</h2>
+              <h2 className="text-5xl font-bold text-gray-300">解析結果</h2>
             </div>
 
             {error && (
-              <div className="p-5 bg-red-950/50 border border-red-900/50 text-red-200 rounded-xl text-xl">
+              <div className="p-6 bg-red-950/50 border border-red-900/50 text-red-200 rounded-2xl text-3xl">
                 Error: {error}
               </div>
             )}
 
             {/* Mobile: Single column - Original image first */}
-            <div className="space-y-5">
-              <p className="text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
+            <div className="space-y-6">
+              <p className="text-3xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
                 <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
                 {isProcessing && (
-                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-2xl z-10">
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-3xl z-10">
                     <div className="text-center">
-                      <div className="animate-spin w-16 h-16 border-3 border-mint-500 border-t-transparent rounded-full mx-auto mb-4" />
-                      <p className="text-mint-400 font-bold animate-pulse text-2xl">Geminiで解析中...</p>
+                      <div className="animate-spin w-24 h-24 border-4 border-mint-500 border-t-transparent rounded-full mx-auto mb-6" />
+                      <p className="text-mint-400 font-bold animate-pulse text-4xl">Geminiで解析中...</p>
                     </div>
                   </div>
                 )}
@@ -230,12 +230,12 @@ function App() {
             </div>
 
             {/* Mobile: Results section */}
-            <div className="space-y-5">
-              <p className="text-xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
+            <div className="space-y-6">
+              <p className="text-3xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
               {cropResults.length > 0 ? (
                 <ResultGallery results={cropResults} isMobile={true} />
               ) : (
-                <div className="min-h-[200px] border-2 border-gray-800 border-dashed rounded-2xl flex items-center justify-center text-gray-600 text-2xl">
+                <div className="min-h-[250px] border-2 border-gray-800 border-dashed rounded-3xl flex items-center justify-center text-gray-600 text-4xl">
                   {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
                 </div>
               )}
@@ -309,20 +309,20 @@ function App() {
       {/* Mobile: Fixed bottom action bar when viewing results */}
       {isMobile && originalImage && (
         <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-50 pb-safe">
-          <div className="flex items-center justify-around px-4 py-4 gap-3">
+          <div className="flex items-center justify-around px-4 py-5 gap-4">
             <button
               onClick={handleReset}
-              className="flex-1 flex items-center justify-center gap-3 px-6 py-5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-2xl transition-colors text-xl font-bold"
+              className="flex-1 flex items-center justify-center gap-4 px-8 py-7 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-2xl transition-colors text-3xl font-bold"
             >
-              <RotateCcw className="w-7 h-7" />
+              <RotateCcw className="w-10 h-10" />
               <span>クリア</span>
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isProcessing}
-              className="flex-1 flex items-center justify-center gap-3 px-6 py-5 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-2xl transition-colors text-xl font-bold"
+              className="flex-1 flex items-center justify-center gap-4 px-8 py-7 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-2xl transition-colors text-3xl font-bold"
             >
-              <Upload className="w-7 h-7" />
+              <Upload className="w-10 h-10" />
               <span>新しい画像</span>
             </button>
           </div>
