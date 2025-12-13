@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { ApiKeyModal } from './components/ApiKeyModal';
 import { ImageUploader } from './components/ImageUploader';
-import { ImageOverlay } from './components/ImageOverlay';
-import { ResultGallery } from './components/ResultGallery';
 import { analyzeImage, type AnalyzeResponse } from './lib/geminiSplitter';
 import { processImageCrops, fileToBase64, type CropResult } from './lib/imageProcessor';
 import { saveHistory } from './lib/db';
 import { useMobile } from './hooks/useMobile';
 import { cn } from './lib/utils';
-import { Settings, RotateCcw, Download } from 'lucide-react';
+import { RotateCcw, Download, Settings } from 'lucide-react';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { MobileResultLayout } from './components/layouts/MobileResultLayout';
+import { DesktopResultLayout } from './components/layouts/DesktopResultLayout';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
@@ -43,7 +45,6 @@ function App() {
 
   const handleClearKey = () => {
     localStorage.removeItem('gemini_api_key');
-    // keep model preference or clear it? User didn't specify, but clearing key is main goal.
     setApiKey('');
     setIsKeyModalOpen(false);
   };
@@ -121,55 +122,7 @@ function App() {
         className="hidden"
       />
 
-      <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
-        <div className={cn(
-          "container mx-auto px-4 flex items-center justify-between gap-4",
-          isMobile ? "py-6" : "h-20"
-        )}>
-          <div className="flex items-center gap-5 flex-1 min-w-0">
-            <div className="relative group flex-shrink-0">
-              <div className="absolute inset-0 bg-mint-500/20 blur-lg rounded-full group-hover:bg-mint-500/30 transition-all duration-500" />
-              <img
-                src="icon.png"
-                alt="Logo"
-                className={cn(
-                  "relative z-10 object-contain drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] group-hover:scale-110 transition-transform duration-300",
-                  isMobile ? "w-24 h-24" : "w-10 h-10"
-                )}
-              />
-            </div>
-            <div className="flex flex-col justify-center min-w-0">
-              <span className={cn(
-                "font-bold tracking-[0.15em] text-mint-500 uppercase leading-none mb-2",
-                isMobile ? "text-xl" : "text-[10px]"
-              )}>
-                AI IMAGE SPLITTER
-              </span>
-              <h1 className={cn(
-                "font-bold text-white tracking-wide leading-none",
-                isMobile ? "text-5xl" : "text-xl"
-              )}>
-                サッとAIイメージ分割
-              </h1>
-              {!isMobile && (
-                <p className="text-[11px] text-gray-400 leading-tight opacity-80 mt-1">
-                  画像や漫画のコマをAIで自動検出
-                </p>
-              )}
-            </div>
-          </div>
-          <button
-            onClick={() => setIsKeyModalOpen(true)}
-            className={cn(
-              "hover:bg-gray-800 transition-colors text-gray-400 hover:text-white flex-shrink-0 active:bg-gray-700",
-              isMobile ? "p-5 rounded-2xl" : "p-2 rounded-lg"
-            )}
-            title="API Settings"
-          >
-            <Settings className={isMobile ? "w-14 h-14" : "w-6 h-6"} />
-          </button>
-        </div>
-      </header>
+      <Header isMobile={isMobile} onOpenSettings={() => setIsKeyModalOpen(true)} />
 
       <main className="flex-1 container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
         <ApiKeyModal
@@ -201,112 +154,26 @@ function App() {
             )}
           </div>
         ) : isMobile ? (
-          /* Mobile: 1-column layout */
-          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {error && (
-              <div className="p-6 bg-red-950/50 border border-red-900/50 text-red-200 rounded-2xl text-3xl">
-                Error: {error}
-              </div>
-            )}
-
-            {/* Mobile: Single column - Original image first */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-5xl font-bold text-white mb-2">解析結果</h3>
-                <p className="text-2xl text-gray-500">元画像 / 解析オーバーレイ</p>
-              </div>
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
-                <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
-                {isProcessing && (
-                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-3xl z-10">
-                    <div className="text-center">
-                      <div className="animate-spin w-24 h-24 border-4 border-mint-500 border-t-transparent rounded-full mx-auto mb-6" />
-                      <p className="text-mint-400 font-bold animate-pulse text-4xl">Geminiで解析中...</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Mobile: Results section */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-5xl font-bold text-white mb-2">分割画像 ({cropResults.length})</h3>
-                <p className="text-2xl text-gray-500">分割された画像</p>
-              </div>
-              {cropResults.length > 0 ? (
-                <ResultGallery results={cropResults} isMobile={true} />
-              ) : (
-                <div className="min-h-[250px] border-2 border-gray-800 border-dashed rounded-3xl flex items-center justify-center text-gray-600 text-4xl">
-                  {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
-                </div>
-              )}
-            </div>
-          </div>
+          <MobileResultLayout
+            error={error}
+            originalImage={originalImage}
+            analysisData={analysisData}
+            isProcessing={isProcessing}
+            cropResults={cropResults}
+          />
         ) : (
-          /* Desktop: 2-column layout */
-          <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl sm:text-2xl font-medium text-gray-300">解析結果</h2>
-            </div>
-
-            {error && (
-              <div className="p-4 sm:p-6 bg-red-950/50 border border-red-900/50 text-red-200 rounded-xl text-base sm:text-lg">
-                Error: {error}
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-              {/* Left: Visualization */}
-              <div className="space-y-4 sm:space-y-4">
-                <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
-                <div className="relative rounded-2xl sm:rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
-                  <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
-                  {isProcessing && (
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-2xl sm:rounded-lg z-10">
-                      <div className="text-center">
-                        <div className="animate-spin w-12 h-12 sm:w-12 sm:h-12 border-2 border-mint-500 border-t-transparent rounded-full mx-auto mb-3" />
-                        <p className="text-mint-400 font-medium animate-pulse text-lg sm:text-xl">Geminiで解析中...</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleReset}
-                    className="flex items-center gap-2 px-8 py-3.5 sm:px-10 sm:py-4 text-base sm:text-lg font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 active:bg-gray-700 group"
-                    title="Clear and start over"
-                  >
-                    <RotateCcw className="w-5 h-5 sm:w-5 sm:h-5" />
-                    <span className="group-hover:text-red-100 transition-colors">Clear & New</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Right: Results */}
-              <div className="space-y-4 sm:space-y-4">
-                <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
-                {cropResults.length > 0 ? (
-                  <ResultGallery results={cropResults} isMobile={false} />
-                ) : (
-                  <div className="h-full min-h-[250px] sm:min-h-[400px] border-2 border-gray-800 border-dashed rounded-2xl sm:rounded-xl flex items-center justify-center text-gray-600 text-lg sm:text-2xl">
-                    {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <DesktopResultLayout
+            error={error}
+            originalImage={originalImage}
+            analysisData={analysisData}
+            isProcessing={isProcessing}
+            cropResults={cropResults}
+            onReset={handleReset}
+          />
         )}
       </main>
 
-      {/* Desktop footer - hidden on mobile when showing results */}
-      {(!isMobile || !originalImage) && (
-        <footer className="py-6 border-t border-gray-900 mt-12">
-          <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
-            <p>Powered by Google Gemini</p>
-          </div>
-        </footer>
-      )}
+      <Footer isMobile={isMobile} originalImage={originalImage} />
 
       {/* Mobile: Fixed bottom action bar when viewing results */}
       {isMobile && originalImage && (
