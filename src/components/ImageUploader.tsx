@@ -69,22 +69,22 @@ export function ImageUploader({ onImageSelect, isProcessing }: ImageUploaderProp
                     <p className="text-2xl sm:text-xl font-bold">画像を処理中...</p>
                 </div>
             ) : (
-                <div className="text-center space-y-8 sm:space-y-6 relative z-10 w-full px-4">
-                    <div className="w-28 h-28 sm:w-20 sm:h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors shadow-lg shadow-black/20">
+                <div className="text-center space-y-10 sm:space-y-6 relative z-10 w-full px-4">
+                    <div className="w-32 h-32 sm:w-20 sm:h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors shadow-lg shadow-black/20">
                         {isDragging ? (
-                            <Upload className="w-14 h-14 sm:w-10 sm:h-10 text-mint-500" />
+                            <Upload className="w-16 h-16 sm:w-10 sm:h-10 text-mint-500" />
                         ) : (
-                            <ImageIcon className="w-14 h-14 sm:w-10 sm:h-10 text-gray-500 group-hover:text-gray-300" />
+                            <ImageIcon className="w-16 h-16 sm:w-10 sm:h-10 text-gray-500 group-hover:text-gray-300" />
                         )}
                     </div>
                     <div>
-                        <h3 className="text-2xl sm:text-2xl font-bold text-white mb-4 sm:mb-3">
+                        <h3 className="text-3xl sm:text-2xl font-bold text-white mb-6 sm:mb-3">
                             {isDragging ? "ドロップしてアップロード" : "画像をアップロード"}
                         </h3>
-                        <p className="text-lg sm:text-base text-gray-400 max-w-sm mx-auto leading-relaxed">
+                        <p className="text-xl sm:text-base text-gray-400 max-w-sm mx-auto leading-relaxed">
                             タップして画像を選択<span className="hidden sm:inline">、またはドラッグ＆ドロップ</span>
                             <br className="sm:hidden" />
-                            <span className="text-base sm:text-sm text-gray-500 mt-2 block">(JPG, PNG, WEBP)</span>
+                            <span className="text-lg sm:text-sm text-gray-500 mt-3 block">(JPG, PNG, WEBP)</span>
                         </p>
                     </div>
                 </div>
