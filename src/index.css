@@ -17,6 +17,8 @@
 :root {
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
+  /* Minimum touch target size (Apple Human Interface Guidelines recommend 44px) */
+  --min-touch-target: 44px;
 }
 
 .dark {
@@ -33,11 +35,39 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Mobile-specific adjustments */
-@media (max-width: 768px) {
+/* 
+ * Mobile and touch device optimizations
+ * Applied when either:
+ * - Screen width is <= 768px (mobile breakpoint)
+ * - Device has coarse pointer (touch screen)
+ */
+@media (max-width: 768px), (pointer: coarse) {
+  /* Increase base font size for better readability */
+  html {
+    font-size: 16px;
+  }
+  
+  body {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
   /* Ensure touch targets are appropriately sized */
-  button, a {
-    min-height: 44px;
+  button, 
+  a,
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="file"],
+  select,
+  textarea {
+    min-height: var(--min-touch-target);
+  }
+  
+  /* Improve touch interaction */
+  button,
+  a {
+    touch-action: manipulation;
   }
   
   /* Prevent text selection on interactive elements for better touch experience */
@@ -49,5 +79,21 @@ body {
   /* Improve scrolling performance on mobile */
   .scroll-container {
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Form input improvements - prevents iOS zoom on focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Portrait mode specific adjustments */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Optimize layout for portrait smartphone usage */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
