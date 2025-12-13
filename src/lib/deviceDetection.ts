@@ -1,18 +1,22 @@
 /**
  * Device detection utilities beyond screen size
+ * Follows the pattern from satto-receipt for responsive mobile UI detection
  */
 
 // User agent patterns for mobile device detection
 const MOBILE_USER_AGENT_PATTERN = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+
+// Mobile breakpoint width (consistent with Tailwind's sm breakpoint)
+const MOBILE_BREAKPOINT = 768;
 
 /**
  * Detect if the device supports touch input
  * This checks multiple indicators beyond just screen size
  */
 export function isTouchDevice(): boolean {
-  // Check if running in a browser environment
+  // Check if running in a browser environment (SSR-safe)
   if (typeof window === 'undefined') {
-    return false;
+    return true; // Default to touch-capable for SSR
   }
 
   // Check for touch events support
@@ -39,42 +43,53 @@ export function isTouchDevice(): boolean {
 }
 
 /**
- * Detect if the device is likely a mobile phone based on multiple factors
+ * Detect if the current device should use mobile UI
+ * Uses window.innerWidth, touch detection, and user agent
+ * SSR defaults to mobile for mobile-first approach
  */
-export function isMobileDevice(): boolean {
-  // Check if running in a browser environment
+export function detectMobile(): boolean {
+  // SSR: Default to mobile (mobile-first approach)
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-    return false;
+    return true;
   }
 
-  // User agent check with safe property access
-  const userAgent = (navigator.userAgent || (navigator as Navigator & { vendor?: string }).vendor || '').toLowerCase();
+  // 1. Screen width check (primary)
+  const isSmallScreen = window.innerWidth < MOBILE_BREAKPOINT;
   
-  // Check for mobile user agents
-  const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent);
-  
-  // Combine touch detection with screen size
-  const isSmallScreen = window.innerWidth < 768;
+  // 2. Touch capability check
   const hasTouch = isTouchDevice();
   
-  return isMobileUA || (isSmallScreen && hasTouch);
+  // 3. User agent check
+  const userAgent = (navigator.userAgent || '').toLowerCase();
+  const isMobileUA = MOBILE_USER_AGENT_PATTERN.test(userAgent);
+  
+  // Mobile if: small screen, OR (touch + mobile UA)
+  return isSmallScreen || (hasTouch && isMobileUA);
+}
+
+/**
+ * Detect if the device is likely a mobile phone based on multiple factors
+ * @deprecated Use detectMobile() instead for responsive UI decisions
+ */
+export function isMobileDevice(): boolean {
+  return detectMobile();
 }
 
 /**
  * Get device type classification
  */
 export function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
-  // Check if running in a browser environment
+  // Check if running in a browser environment (SSR defaults to mobile)
   if (typeof window === 'undefined') {
-    return 'desktop';
+    return 'mobile';
   }
 
   const width = window.innerWidth;
   const hasTouch = isTouchDevice();
   
-  if (width < 768 && hasTouch) {
+  if (width < MOBILE_BREAKPOINT && hasTouch) {
     return 'mobile';
-  } else if (width >= 768 && width < 1024 && hasTouch) {
+  } else if (width >= MOBILE_BREAKPOINT && width < 1024 && hasTouch) {
     return 'tablet';
   }
   

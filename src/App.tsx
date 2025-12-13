@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ApiKeyModal } from './components/ApiKeyModal';
 import { ImageUploader } from './components/ImageUploader';
 import { ImageOverlay } from './components/ImageOverlay';
@@ -6,7 +6,9 @@ import { ResultGallery } from './components/ResultGallery';
 import { analyzeImage, type AnalyzeResponse } from './lib/geminiSplitter';
 import { processImageCrops, fileToBase64, type CropResult } from './lib/imageProcessor';
 import { saveHistory } from './lib/db';
-import { Settings } from 'lucide-react';
+import { useMobile } from './hooks/useMobile';
+import { cn } from './lib/utils';
+import { Settings, RotateCcw, Upload } from 'lucide-react';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
@@ -19,6 +21,11 @@ function App() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Mobile detection with resize listener
+  const isMobile = useMobile();
+  // Reference for file input (for mobile bottom action bar)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!apiKey) {
@@ -99,7 +106,21 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans">
+    <div className={cn(
+      "min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans",
+      isMobile && originalImage && "pb-20"
+    )}>
+      {/* Hidden file input for mobile bottom action bar */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={(e) => {
+          if (e.target.files?.[0]) handleImageSelect(e.target.files[0]);
+        }}
+        accept="image/*"
+        className="hidden"
+      />
+
       <header className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-md sticky top-0 z-40">
         <div className="container mx-auto px-4 h-auto py-4 sm:py-0 sm:h-20 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
@@ -158,7 +179,49 @@ function App() {
               </div>
             )}
           </div>
+        ) : isMobile ? (
+          /* Mobile: 1-column layout */
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-medium text-gray-300">解析結果</h2>
+            </div>
+
+            {error && (
+              <div className="p-4 bg-red-950/50 border border-red-900/50 text-red-200 rounded-xl text-base">
+                Error: {error}
+              </div>
+            )}
+
+            {/* Mobile: Single column - Original image first */}
+            <div className="space-y-4">
+              <p className="text-base text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
+                <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
+                {isProcessing && (
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-2xl z-10">
+                    <div className="text-center">
+                      <div className="animate-spin w-12 h-12 border-2 border-mint-500 border-t-transparent rounded-full mx-auto mb-3" />
+                      <p className="text-mint-400 font-medium animate-pulse text-lg">Geminiで解析中...</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Mobile: Results section */}
+            <div className="space-y-4">
+              <p className="text-base text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
+              {cropResults.length > 0 ? (
+                <ResultGallery results={cropResults} />
+              ) : (
+                <div className="min-h-[200px] border-2 border-gray-800 border-dashed rounded-2xl flex items-center justify-center text-gray-600 text-lg">
+                  {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
+                </div>
+              )}
+            </div>
+          </div>
         ) : (
+          /* Desktop: 2-column layout */
           <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center">
               <h2 className="text-xl sm:text-2xl font-medium text-gray-300">解析結果</h2>
@@ -191,6 +254,7 @@ function App() {
                     className="flex items-center gap-2 px-8 py-3.5 sm:px-10 sm:py-4 text-base sm:text-lg font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 active:bg-gray-700 group"
                     title="Clear and start over"
                   >
+                    <RotateCcw className="w-5 h-5 sm:w-5 sm:h-5" />
                     <span className="group-hover:text-red-100 transition-colors">Clear & New</span>
                   </button>
                 </div>
@@ -212,11 +276,37 @@ function App() {
         )}
       </main>
 
-      <footer className="py-6 border-t border-gray-900 mt-12">
-        <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
-          <p>Powered by Google Gemini</p>
+      {/* Desktop footer - hidden on mobile when showing results */}
+      {(!isMobile || !originalImage) && (
+        <footer className="py-6 border-t border-gray-900 mt-12">
+          <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
+            <p>Powered by Google Gemini</p>
+          </div>
+        </footer>
+      )}
+
+      {/* Mobile: Fixed bottom action bar when viewing results */}
+      {isMobile && originalImage && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-50 pb-safe">
+          <div className="flex items-center justify-around px-4 py-3 gap-2">
+            <button
+              onClick={handleReset}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-sm font-medium"
+            >
+              <RotateCcw className="w-5 h-5" />
+              <span>Clear</span>
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isProcessing}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-xl transition-colors text-sm font-medium"
+            >
+              <Upload className="w-5 h-5" />
+              <span>新しい画像</span>
+            </button>
+          </div>
         </div>
-      </footer>
+      )}
     </div>
   );
 }

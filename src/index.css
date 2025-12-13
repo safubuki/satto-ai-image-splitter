@@ -27,3 +27,27 @@
 body {
   @apply bg-gray-900 text-gray-100 antialiased;
 }
+
+/* Safe area inset for mobile devices with notches */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  /* Ensure touch targets are appropriately sized */
+  button, a {
+    min-height: 44px;
+  }
+  
+  /* Prevent text selection on interactive elements for better touch experience */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Improve scrolling performance on mobile */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+  }
+}
