@@ -74,7 +74,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                         </div>
                         <h2 className={cn(
                             "font-bold text-white",
-                            isMobile ? "text-4xl" : "text-lg"
+                            isMobile ? "text-5xl" : "text-lg"
                         )}>API設定</h2>
                     </div>
                     <div className={cn("flex items-center", isMobile ? "gap-4" : "gap-2")}>
@@ -84,7 +84,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-colors flex items-center font-medium active:bg-red-900/30",
                                     isMobile
-                                        ? "px-6 py-4 rounded-2xl gap-3 text-2xl"
+                                        ? "px-6 py-4 rounded-2xl gap-3 text-3xl"
                                         : "px-3 py-1.5 rounded-lg gap-2 text-xs"
                                 )}
                                 title="設定を削除する"
@@ -108,11 +108,11 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                 <div className={isMobile ? "p-8" : "p-6"}>
                     <p className={cn(
                         "text-gray-400 leading-relaxed",
-                        isMobile ? "mb-8 text-2xl" : "mb-6 text-base"
+                        isMobile ? "mb-10 text-3xl" : "mb-6 text-base"
                     )}>
                         AIによる分割機能を使用するには、Google Gemini APIキーが必要です。
                         <br />
-                        <span className={cn("text-gray-500", isMobile ? "text-xl" : "text-sm")}>
+                        <span className={cn("text-gray-500", isMobile ? "text-2xl" : "text-sm")}>
                             キーはブラウザ内にのみ保存されます。
                         </span>
                     </p>
@@ -121,13 +121,13 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                         <div className={isMobile ? "mb-8" : "mb-6"}>
                             <label className={cn(
                                 "flex items-center text-gray-400 uppercase font-medium",
-                                isMobile ? "gap-4 text-xl mb-5" : "gap-2 text-xs mb-3"
+                                isMobile ? "gap-4 text-3xl mb-6" : "gap-2 text-xs mb-3"
                             )}>
                                 API Key
                                 <div className="relative group">
                                     <HelpCircle className={cn(
                                         "text-gray-500 hover:text-mint-400 cursor-help transition-colors",
-                                        isMobile ? "w-8 h-8" : "w-4 h-4"
+                                        isMobile ? "w-10 h-10" : "w-4 h-4"
                                     )} />
                                     {!isMobile && (
                                         <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl text-xs text-gray-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
@@ -151,7 +151,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "w-full bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-mint-500/50 font-mono",
                                     isMobile
-                                        ? "rounded-2xl px-6 py-6 text-3xl mb-5"
+                                        ? "rounded-2xl px-8 py-8 text-4xl mb-6"
                                         : "rounded-lg px-4 py-3 text-base mb-3"
                                 )}
                             />
@@ -161,10 +161,10 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 rel="noopener noreferrer"
                                 className={cn(
                                     "text-mint-500 hover:text-mint-400 flex items-center inline-flex transition-colors",
-                                    isMobile ? "gap-3 text-2xl" : "gap-1.5 text-xs"
+                                    isMobile ? "gap-4 text-3xl" : "gap-1.5 text-xs"
                                 )}
                             >
-                                <ExternalLink className={isMobile ? "w-7 h-7" : "w-3 h-3"} />
+                                <ExternalLink className={isMobile ? "w-10 h-10" : "w-3 h-3"} />
                                 APIキーを取得する (Google AI Studio)
                             </a>
                         </div>
@@ -172,7 +172,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                         <div className={cn("space-y-4", isMobile ? "mb-10" : "mb-8")}>
                             <label className={cn(
                                 "text-gray-400 uppercase font-medium",
-                                isMobile ? "text-xl" : "text-xs"
+                                isMobile ? "text-3xl" : "text-xs"
                             )}>使用モデル</label>
                             <select
                                 value={model}
@@ -180,7 +180,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "w-full bg-gray-950 border border-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-mint-500/50 appearance-none cursor-pointer",
                                     isMobile
-                                        ? "rounded-2xl px-6 py-6 text-2xl"
+                                        ? "rounded-2xl px-8 py-8 text-3xl"
                                         : "rounded-lg px-4 py-2.5 text-base"
                                 )}
                             >
@@ -188,7 +188,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                     <option key={m.id} value={m.id}>{m.name}</option>
                                 ))}
                             </select>
-                            <p className={cn("text-gray-500", isMobile ? "text-xl" : "text-xs")}>
+                            <p className={cn("text-gray-500", isMobile ? "text-2xl" : "text-xs")}>
                                 ※ "429 Quota" エラーが出る場合は、しばらく待ってから再試行してください。
                             </p>
                         </div>
@@ -205,7 +205,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "text-gray-400 hover:text-white transition-colors font-medium hover:bg-gray-800 active:bg-gray-700",
                                     isMobile
-                                        ? "w-full px-8 py-7 text-3xl rounded-2xl order-2"
+                                        ? "w-full px-10 py-8 text-4xl rounded-2xl order-2"
                                         : "px-4 py-2 text-sm rounded-lg order-1"
                                 )}
                             >
@@ -217,7 +217,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "font-medium transition-all shadow-lg text-white",
                                     isMobile
-                                        ? "w-full px-8 py-7 text-3xl rounded-2xl order-1"
+                                        ? "w-full px-10 py-8 text-4xl rounded-2xl order-1"
                                         : "px-6 py-2 text-sm rounded-lg order-2",
                                     isValid
                                         ? 'bg-mint-600 hover:bg-mint-500 shadow-mint-900/20 active:bg-mint-700'
