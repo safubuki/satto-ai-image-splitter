@@ -132,6 +132,7 @@ function App() {
           onClose={() => setIsKeyModalOpen(false)}
           initialKey={apiKey}
           initialModel={model}
+          isMobile={isMobile}
         />
 
         {!originalImage ? (
