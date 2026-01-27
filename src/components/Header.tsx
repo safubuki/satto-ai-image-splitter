@@ -28,13 +28,13 @@ export function Header({ isMobile, onOpenSettings }: HeaderProps) {
                     <div className="flex flex-col justify-center min-w-0">
                         <span className={cn(
                             "font-bold tracking-[0.15em] text-mint-500 uppercase leading-none mb-2",
-                            isMobile ? "text-xl" : "text-[10px]"
+                            isMobile ? "text-[10px]" : "text-[10px]"
                         )}>
                             AI IMAGE SPLITTER
                         </span>
                         <h1 className={cn(
                             "font-bold text-white tracking-wide leading-none",
-                            isMobile ? "text-5xl" : "text-xl"
+                            isMobile ? "text-xl" : "text-xl"
                         )}>
                             サッとAIイメージ分割
                         </h1>

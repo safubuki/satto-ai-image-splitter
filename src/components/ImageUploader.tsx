@@ -70,55 +70,55 @@ export function ImageUploader({ onImageSelect, isProcessing, isMobile = false }:
             {isProcessing ? (
                 <div className={cn(
                     "flex flex-col items-center text-mint-500 animate-pulse",
-                    isMobile ? "gap-10" : "gap-4"
+                    isMobile ? "gap-5" : "gap-4"
                 )}>
                     <Loader2 className={cn(
                         "animate-spin",
-                        isMobile ? "w-32 h-32" : "w-16 h-16"
+                        isMobile ? "w-16 h-16" : "w-16 h-16"
                     )} />
                     <p className={cn(
                         "font-bold",
-                        isMobile ? "text-5xl" : "text-xl"
+                        isMobile ? "text-xl" : "text-xl"
                     )}>画像を処理中...</p>
                 </div>
             ) : (
                 <div className={cn(
                     "text-center relative z-10 w-full px-4",
-                    isMobile ? "space-y-16" : "space-y-6"
+                    isMobile ? "space-y-8" : "space-y-6"
                 )}>
                     <div className={cn(
                         "bg-gray-800 rounded-full flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors shadow-lg shadow-black/20",
-                        isMobile ? "w-48 h-48" : "w-20 h-20"
+                        isMobile ? "w-24 h-24" : "w-20 h-20"
                     )}>
                         {isDragging ? (
                             <Upload
                                 className="text-mint-500"
-                                style={isMobile ? { width: 96, height: 96 } : { width: 40, height: 40 }}
+                                style={isMobile ? { width: 48, height: 48 } : { width: 40, height: 40 }}
                             />
                         ) : (
                             <ImageIcon
                                 className="text-gray-500 group-hover:text-gray-300"
-                                style={isMobile ? { width: 96, height: 96 } : { width: 40, height: 40 }}
+                                style={isMobile ? { width: 48, height: 48 } : { width: 40, height: 40 }}
                             />
                         )}
                     </div>
                     <div>
                         <h3 className={cn(
                             "font-bold text-white",
-                            isMobile ? "text-6xl mb-10" : "text-2xl mb-3"
+                            isMobile ? "text-3xl mb-5" : "text-2xl mb-3"
                         )}>
                             {isDragging ? "ドロップしてアップロード" : "画像をアップロード"}
                         </h3>
                         <p className={cn(
                             "text-gray-400 max-w-md mx-auto leading-relaxed",
-                            isMobile ? "text-4xl" : "text-base"
+                            isMobile ? "text-xl" : "text-base"
                         )}>
                             タップして画像を選択
                             {!isMobile && <span>、またはドラッグ＆ドロップ</span>}
                             <br />
                             <span className={cn(
                                 "text-gray-500 block",
-                                isMobile ? "text-3xl mt-6" : "text-sm mt-2"
+                                isMobile ? "text-base mt-3" : "text-sm mt-2"
                             )}>(JPG, PNG, WEBP)</span>
                         </p>
                     </div>

@@ -65,31 +65,31 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                         ? "p-8 rounded-t-3xl"
                         : "p-6 rounded-t-xl"
                 )}>
-                    <div className={cn("flex items-center", isMobile ? "gap-5" : "gap-3")}>
+                    <div className={cn("flex items-center", isMobile ? "gap-2.5" : "gap-3")}>
                         <div className={cn(
                             "bg-mint-900/30",
-                            isMobile ? "p-5 rounded-2xl" : "p-2.5 rounded-lg"
+                            isMobile ? "p-2.5 rounded-xl" : "p-2.5 rounded-lg"
                         )}>
-                            <Key className={isMobile ? "w-12 h-12 text-mint-500" : "w-5 h-5 text-mint-500"} />
+                            <Key className={isMobile ? "w-6 h-6 text-mint-500" : "w-5 h-5 text-mint-500"} />
                         </div>
                         <h2 className={cn(
                             "font-bold text-white",
-                            isMobile ? "text-5xl" : "text-lg"
+                            isMobile ? "text-xl" : "text-lg"
                         )}>API設定</h2>
                     </div>
-                    <div className={cn("flex items-center", isMobile ? "gap-4" : "gap-2")}>
+                    <div className={cn("flex items-center", isMobile ? "gap-2" : "gap-2")}>
                         {initialKey && (
                             <button
                                 onClick={handleClear}
                                 className={cn(
                                     "text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-colors flex items-center font-medium active:bg-red-900/30",
                                     isMobile
-                                        ? "px-6 py-4 rounded-2xl gap-3 text-3xl"
+                                        ? "px-3 py-2 rounded-xl gap-1.5 text-base"
                                         : "px-3 py-1.5 rounded-lg gap-2 text-xs"
                                 )}
                                 title="設定を削除する"
                             >
-                                <Trash2 className={isMobile ? "w-8 h-8" : "w-3.5 h-3.5"} />
+                                <Trash2 className={isMobile ? "w-4 h-4" : "w-3.5 h-3.5"} />
                                 {!isMobile && <span>設定を削除</span>}
                             </button>
                         )}
@@ -97,37 +97,37 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                             onClick={onClose}
                             className={cn(
                                 "text-gray-500 hover:text-white hover:bg-gray-800 transition-colors active:bg-gray-700",
-                                isMobile ? "p-5 rounded-2xl" : "p-2 rounded-lg"
+                                isMobile ? "p-2.5 rounded-xl" : "p-2 rounded-lg"
                             )}
                         >
-                            <X className={isMobile ? "w-12 h-12" : "w-5 h-5"} />
+                            <X className={isMobile ? "w-6 h-6" : "w-5 h-5"} />
                         </button>
                     </div>
                 </div>
 
-                <div className={isMobile ? "p-8" : "p-6"}>
+                <div className={isMobile ? "p-4" : "p-6"}>
                     <p className={cn(
                         "text-gray-400 leading-relaxed",
-                        isMobile ? "mb-10 text-3xl" : "mb-6 text-base"
+                        isMobile ? "mb-5 text-base" : "mb-6 text-base"
                     )}>
                         AIによる分割機能を使用するには、Google Gemini APIキーが必要です。
                         <br />
-                        <span className={cn("text-gray-500", isMobile ? "text-2xl" : "text-sm")}>
+                        <span className={cn("text-gray-500", isMobile ? "text-xs" : "text-sm")}>
                             キーはブラウザ内にのみ保存されます。
                         </span>
                     </p>
 
                     <form onSubmit={handleSubmit}>
-                        <div className={isMobile ? "mb-8" : "mb-6"}>
+                        <div className={isMobile ? "mb-4" : "mb-6"}>
                             <label className={cn(
                                 "flex items-center text-gray-400 uppercase font-medium",
-                                isMobile ? "gap-4 text-3xl mb-6" : "gap-2 text-xs mb-3"
+                                isMobile ? "gap-2 text-base mb-3" : "gap-2 text-xs mb-3"
                             )}>
                                 API Key
                                 <div className="relative group">
                                     <HelpCircle className={cn(
                                         "text-gray-500 hover:text-mint-400 cursor-help transition-colors",
-                                        isMobile ? "w-10 h-10" : "w-4 h-4"
+                                        isMobile ? "w-5 h-5" : "w-4 h-4"
                                     )} />
                                     {!isMobile && (
                                         <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-xl text-xs text-gray-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
@@ -151,7 +151,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "w-full bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-mint-500/50 font-mono",
                                     isMobile
-                                        ? "rounded-2xl px-8 py-8 text-4xl mb-6"
+                                        ? "rounded-xl px-4 py-4 text-xl mb-3"
                                         : "rounded-lg px-4 py-3 text-base mb-3"
                                 )}
                             />
@@ -161,18 +161,18 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 rel="noopener noreferrer"
                                 className={cn(
                                     "text-mint-500 hover:text-mint-400 flex items-center inline-flex transition-colors",
-                                    isMobile ? "gap-4 text-3xl" : "gap-1.5 text-xs"
+                                    isMobile ? "gap-2 text-base" : "gap-1.5 text-xs"
                                 )}
                             >
-                                <ExternalLink className={isMobile ? "w-10 h-10" : "w-3 h-3"} />
+                                <ExternalLink className={isMobile ? "w-5 h-5" : "w-3 h-3"} />
                                 APIキーを取得する (Google AI Studio)
                             </a>
                         </div>
 
-                        <div className={cn("space-y-4", isMobile ? "mb-10" : "mb-8")}>
+                        <div className={cn("space-y-2", isMobile ? "mb-5" : "mb-8")}>
                             <label className={cn(
                                 "text-gray-400 uppercase font-medium",
-                                isMobile ? "text-3xl" : "text-xs"
+                                isMobile ? "text-base" : "text-xs"
                             )}>使用モデル</label>
                             <select
                                 value={model}
@@ -180,7 +180,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "w-full bg-gray-950 border border-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-mint-500/50 appearance-none cursor-pointer",
                                     isMobile
-                                        ? "rounded-2xl px-8 py-8 text-3xl"
+                                        ? "rounded-xl px-4 py-4 text-base"
                                         : "rounded-lg px-4 py-2.5 text-base"
                                 )}
                             >
@@ -188,7 +188,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                     <option key={m.id} value={m.id}>{m.name}</option>
                                 ))}
                             </select>
-                            <p className={cn("text-gray-500", isMobile ? "text-2xl" : "text-xs")}>
+                            <p className={cn("text-gray-500", isMobile ? "text-xs" : "text-xs")}>
                                 ※ "429 Quota" エラーが出る場合は、しばらく待ってから再試行してください。
                             </p>
                         </div>
@@ -196,7 +196,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                         <div className={cn(
                             "flex justify-end border-t border-gray-800/50",
                             isMobile
-                                ? "flex-col gap-5 pt-8"
+                                ? "flex-col gap-2.5 pt-4"
                                 : "flex-row gap-3 pt-6"
                         )}>
                             <button
@@ -205,7 +205,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "text-gray-400 hover:text-white transition-colors font-medium hover:bg-gray-800 active:bg-gray-700",
                                     isMobile
-                                        ? "w-full px-10 py-8 text-4xl rounded-2xl order-2"
+                                        ? "w-full px-5 py-4 text-xl rounded-xl order-2"
                                         : "px-4 py-2 text-sm rounded-lg order-1"
                                 )}
                             >
@@ -217,7 +217,7 @@ export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '',
                                 className={cn(
                                     "font-medium transition-all shadow-lg text-white",
                                     isMobile
-                                        ? "w-full px-10 py-8 text-4xl rounded-2xl order-1"
+                                        ? "w-full px-5 py-4 text-xl rounded-xl order-1"
                                         : "px-6 py-2 text-sm rounded-lg order-2",
                                     isValid
                                         ? 'bg-mint-600 hover:bg-mint-500 shadow-mint-900/20 active:bg-mint-700'
