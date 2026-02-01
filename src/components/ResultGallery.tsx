@@ -70,12 +70,12 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
 
                         <div className={cn(
                             "bg-gray-800 border-t border-gray-700",
-                            isMobile ? "p-8" : "p-4"
+                            isMobile ? "p-4" : "p-4"
                         )}>
                             <p
                                 className={cn(
                                     "font-mono text-gray-400 truncate",
-                                    isMobile ? "text-2xl mb-6" : "text-sm mb-3"
+                                    isMobile ? "text-sm mb-3" : "text-sm mb-3"
                                 )}
                                 title={crop.label}
                             >
@@ -86,11 +86,11 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
                                 className={cn(
                                     "w-full flex items-center justify-center bg-gray-700 hover:bg-mint-600 active:bg-mint-700 hover:text-white text-gray-300 transition-colors font-bold",
                                     isMobile
-                                        ? "gap-4 px-10 py-8 rounded-2xl text-3xl"
+                                        ? "gap-2 px-4 py-3 rounded-xl text-base"
                                         : "gap-2 px-4 py-2 rounded text-sm"
                                 )}
                             >
-                                <Download className={isMobile ? "w-10 h-10" : "w-4 h-4"} />
+                                <Download className={isMobile ? "w-5 h-5" : "w-4 h-4"} />
                                 保存
                             </button>
                         </div>

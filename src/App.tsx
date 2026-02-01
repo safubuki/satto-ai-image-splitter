@@ -179,12 +179,12 @@ function App() {
       {/* Mobile: Fixed bottom action bar when viewing results */}
       {isMobile && originalImage && (
         <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-50 pb-safe">
-          <div className="flex items-center justify-around px-4 py-5 gap-4">
+          <div className="flex items-center justify-around px-4 py-3 gap-3">
             <button
               onClick={handleReset}
-              className="flex-1 flex items-center justify-center gap-4 px-8 py-7 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-2xl transition-colors text-3xl font-bold"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-base font-bold"
             >
-              <RotateCcw className="w-10 h-10" />
+              <RotateCcw className="w-5 h-5" />
               <span>クリア</span>
             </button>
             <button
@@ -201,9 +201,9 @@ function App() {
                 });
               }}
               disabled={cropResults.length === 0}
-              className="flex-[1.5] flex items-center justify-center gap-4 px-8 py-7 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-2xl transition-colors text-3xl font-bold shadow-lg shadow-mint-500/20"
+              className="flex-[1.5] flex items-center justify-center gap-2 px-4 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-xl transition-colors text-base font-bold shadow-lg shadow-mint-500/20"
             >
-              <Download className="w-10 h-10" />
+              <Download className="w-5 h-5" />
               <span>全てダウンロード</span>
             </button>
           </div>
