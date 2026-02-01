@@ -33,8 +33,8 @@ export function Header({ isMobile, onOpenSettings }: HeaderProps) {
                             AI IMAGE SPLITTER
                         </span>
                         <h1 className={cn(
-                            "font-bold text-white tracking-wide leading-none",
-                            isMobile ? "text-xl" : "text-xl"
+                            "font-bold text-white tracking-wide leading-none whitespace-nowrap",
+                            isMobile ? "text-base" : "text-xl"
                         )}>
                             サッとAIイメージ分割
                         </h1>
@@ -49,11 +49,11 @@ export function Header({ isMobile, onOpenSettings }: HeaderProps) {
                     onClick={onOpenSettings}
                     className={cn(
                         "hover:bg-gray-800 transition-colors text-gray-400 hover:text-white flex-shrink-0 active:bg-gray-700",
-                        isMobile ? "p-5 rounded-2xl" : "p-2 rounded-lg"
+                        isMobile ? "p-3 rounded-xl" : "p-2 rounded-lg"
                     )}
                     title="API Settings"
                 >
-                    <Settings className={isMobile ? "w-14 h-14" : "w-6 h-6"} />
+                    <Settings className={isMobile ? "w-6 h-6" : "w-6 h-6"} />
                 </button>
             </div>
         </header>
