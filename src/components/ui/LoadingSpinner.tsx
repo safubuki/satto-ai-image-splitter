@@ -14,12 +14,12 @@ export function LoadingSpinner({ isMobile }: LoadingSpinnerProps) {
                 <div className={cn(
                     "animate-spin border-mint-500 border-t-transparent rounded-full mx-auto",
                     isMobile
-                        ? "w-24 h-24 border-4 mb-6"
+                        ? "w-16 h-16 border-4 mb-4"
                         : "w-12 h-12 border-2 mb-3"
                 )} />
                 <p className={cn(
                     "text-mint-400 font-bold animate-pulse",
-                    isMobile ? "text-4xl" : "text-lg sm:text-xl font-medium"
+                    isMobile ? "text-base" : "text-lg sm:text-xl font-medium"
                 )}>
                     Geminiで解析中...
                 </p>
