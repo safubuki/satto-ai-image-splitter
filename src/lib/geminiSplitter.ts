@@ -22,6 +22,12 @@ const SYSTEM_PROMPT = `You are an expert image analysis AI specialized in detect
 ## Task
 Analyze this image and identify ALL distinct sub-images, panels, or sections that could be extracted as individual images.
 
+## Analysis Steps (Follow in order)
+1. **Understand the overall structure**: Is this a manga/comic page, photo collage, grid layout, before/after comparison, multi-view image, or a single continuous image?
+2. **Identify separation boundaries**: Look for straight lines (horizontal/vertical), borders, gutters, frames, clear edges, or strong contrast lines that divide the image into sections. Gutters between panels are typically 0.5-3% of image dimension.
+3. **Define precise bounding boxes**: For each detected sub-image, determine the tightest possible bounding box that includes the content but excludes gutters, borders, and margins.
+4. **Validate**: Ensure detected regions don't overlap significantly and cover all meaningful content.
+
 ## What to detect
 - Comic/manga panels (each story panel)
 - Photo collages (each individual photo)
@@ -36,14 +42,25 @@ Analyze this image and identify ALL distinct sub-images, panels, or sections tha
 2. Each detected region should be a complete, meaningful sub-image
 3. Do NOT split a single continuous image into arbitrary parts
 4. If the image has no sub-divisions, return the entire image as one crop
-5. Exclude thin borders, margins, or decorative frames from the crop coordinates
+5. **Tight boundaries**: Crop coordinates should be tight around the content. Exclude thin borders, margins, gutters, or decorative frames from the crop coordinates
 6. Ensure crops do not overlap significantly
+7. For grid layouts, ensure all cells are detected and make coordinates consistent across rows/columns
+8. Panels touching the image edge should have coordinates at or very near 0 or 1000
+9. **Gutter handling**: If there are gutters between panels, the crop boundary should be at the inner edge of the gutter (where the content starts), not at the outer edge
+10. Be thorough - detect ALL distinct sub-images, not just the obvious ones
+
+## Common patterns
+- **Manga/Comics**: Panels separated by white or black gutters. Panels may be irregular sizes. Look for the gutter lines first, then define panels between them.
+- **Photo grids**: Regular NxM arrangement. All cells should be similar size with consistent coordinates.
+- **Before/After**: Usually 2 images side by side or top/bottom with a clear dividing line.
+- **Collage**: Irregular arrangement of photos. Focus on distinct photo boundaries.
 
 ## Coordinate system
 - Use coordinates in 0-1000 scale (NOT 0-1)
 - box_2d format: [ymin, xmin, ymax, xmax]
 - ymin/ymax = vertical position (0=top, 1000=bottom)
 - xmin/xmax = horizontal position (0=left, 1000=right)
+- Be precise with coordinates. For content at the very edge of the image, use values close to 0 or 1000.
 
 ## Output format
 Return ONLY a valid JSON object:
@@ -53,18 +70,27 @@ Return ONLY a valid JSON object:
   ]
 }
 
-## Example
-For a 2x2 grid image:
+## Examples
+For a 2x2 grid image with thin gutters:
 {
   "crops": [
-    { "label": "top-left image", "box_2d": [0, 0, 490, 490] },
-    { "label": "top-right image", "box_2d": [0, 510, 490, 1000] },
-    { "label": "bottom-left image", "box_2d": [510, 0, 1000, 490] },
-    { "label": "bottom-right image", "box_2d": [510, 510, 1000, 1000] }
+    { "label": "top-left", "box_2d": [5, 5, 490, 490] },
+    { "label": "top-right", "box_2d": [5, 510, 490, 995] },
+    { "label": "bottom-left", "box_2d": [510, 5, 995, 490] },
+    { "label": "bottom-right", "box_2d": [510, 510, 995, 995] }
   ]
 }
 
-Now analyze the provided image and detect all sub-images.`;
+For a manga page with 3 panels (2 on top, 1 on bottom):
+{
+  "crops": [
+    { "label": "panel-1 top-left", "box_2d": [5, 5, 480, 495] },
+    { "label": "panel-2 top-right", "box_2d": [5, 505, 480, 995] },
+    { "label": "panel-3 bottom full-width", "box_2d": [500, 5, 995, 995] }
+  ]
+}
+
+Now analyze the provided image and detect all sub-images with precise boundaries.`;
 
 /**
  * Detect MIME type from base64 data URL
@@ -110,6 +136,75 @@ function validateBox(box: [number, number, number, number]): [number, number, nu
     }
     
     return [ymin, xmin, ymax, xmax];
+}
+
+/**
+ * Post-process crops to improve precision
+ */
+function postProcessCrops(crops: SplitResult[]): SplitResult[] {
+    // Deep copy
+    let result = crops.map(c => ({
+        ...c,
+        box_2d: [...c.box_2d] as [number, number, number, number]
+    }));
+
+    // 1. Snap edges close to image boundaries (within 3%)
+    const edgeThreshold = 0.03;
+    result = result.map(crop => {
+        let [ymin, xmin, ymax, xmax] = crop.box_2d;
+        if (ymin > 0 && ymin < edgeThreshold) ymin = 0;
+        if (xmin > 0 && xmin < edgeThreshold) xmin = 0;
+        if (ymax < 1 && ymax > 1 - edgeThreshold) ymax = 1;
+        if (xmax < 1 && xmax > 1 - edgeThreshold) xmax = 1;
+        return { ...crop, box_2d: [ymin, xmin, ymax, xmax] as [number, number, number, number] };
+    });
+
+    // 2. Align nearby edges across crops to reduce gaps
+    if (result.length > 1) {
+        const alignThreshold = 0.02;
+
+        // Collect all edge values per axis, group nearby ones, align to average
+        const alignEdges = (edges: { cropIdx: number; edgeIdx: number; value: number }[]) => {
+            edges.sort((a, b) => a.value - b.value);
+            const groups: (typeof edges)[] = [];
+            let group: typeof edges = [];
+
+            for (const e of edges) {
+                if (group.length === 0 || e.value - group[0].value < alignThreshold) {
+                    group.push(e);
+                } else {
+                    if (group.length > 1) groups.push(group);
+                    group = [e];
+                }
+            }
+            if (group.length > 1) groups.push(group);
+
+            for (const g of groups) {
+                const avg = g.reduce((s, v) => s + v.value, 0) / g.length;
+                for (const v of g) {
+                    result[v.cropIdx].box_2d[v.edgeIdx] = avg;
+                }
+            }
+        };
+
+        // Y-axis edges (ymin=0, ymax=2)
+        const yEdges: { cropIdx: number; edgeIdx: number; value: number }[] = [];
+        result.forEach((crop, i) => {
+            yEdges.push({ cropIdx: i, edgeIdx: 0, value: crop.box_2d[0] });
+            yEdges.push({ cropIdx: i, edgeIdx: 2, value: crop.box_2d[2] });
+        });
+        alignEdges(yEdges);
+
+        // X-axis edges (xmin=1, xmax=3)
+        const xEdges: { cropIdx: number; edgeIdx: number; value: number }[] = [];
+        result.forEach((crop, i) => {
+            xEdges.push({ cropIdx: i, edgeIdx: 1, value: crop.box_2d[1] });
+            xEdges.push({ cropIdx: i, edgeIdx: 3, value: crop.box_2d[3] });
+        });
+        alignEdges(xEdges);
+    }
+
+    return result;
 }
 
 export async function analyzeImage(fileBase64: string, apiKey: string, modelName: string = "gemini-2.5-flash-lite"): Promise<AnalyzeResponse> {
@@ -187,8 +282,11 @@ export async function analyzeImage(fileBase64: string, apiKey: string, modelName
                 box_2d: [0, 0, 1, 1]
             });
         }
+
+        // Post-process to improve precision
+        const processedCrops = postProcessCrops(validatedCrops);
         
-        return { crops: validatedCrops };
+        return { crops: processedCrops };
 
     } catch (error: any) {
         const errorMessage = error instanceof Error ? error.message : String(error);

@@ -1,4 +1,4 @@
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Edit3 } from 'lucide-react';
 import { ResultGallery } from '../ResultGallery';
 import { ImageOverlay } from '../ImageOverlay';
 import { ErrorDisplay } from '../ui/ErrorDisplay';
@@ -13,6 +13,7 @@ interface DesktopResultLayoutProps {
     isProcessing: boolean;
     cropResults: CropResult[];
     onReset: () => void;
+    onReEdit?: () => void;
 }
 
 export function DesktopResultLayout({
@@ -21,7 +22,8 @@ export function DesktopResultLayout({
     analysisData,
     isProcessing,
     cropResults,
-    onReset
+    onReset,
+    onReEdit
 }: DesktopResultLayoutProps) {
     return (
         <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -39,7 +41,17 @@ export function DesktopResultLayout({
                         <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
                         {isProcessing && <LoadingSpinner isMobile={false} />}
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-3">
+                        {onReEdit && (
+                            <button
+                                onClick={onReEdit}
+                                className="flex items-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 text-base sm:text-lg font-bold text-white bg-gray-800 border border-yellow-500/30 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-yellow-500/60 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] active:scale-95 active:bg-gray-700 group"
+                                title="矩形を再調整"
+                            >
+                                <Edit3 className="w-5 h-5 sm:w-5 sm:h-5 text-yellow-400" />
+                                <span className="group-hover:text-yellow-100 transition-colors">再調整</span>
+                            </button>
+                        )}
                         <button
                             onClick={onReset}
                             className="flex items-center gap-2 px-8 py-3.5 sm:px-10 sm:py-4 text-base sm:text-lg font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 active:bg-gray-700 group"

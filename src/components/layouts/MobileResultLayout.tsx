@@ -1,3 +1,4 @@
+import { Edit3 } from 'lucide-react';
 import { ResultGallery } from '../ResultGallery';
 import { ImageOverlay } from '../ImageOverlay';
 import { ErrorDisplay } from '../ui/ErrorDisplay';
@@ -11,6 +12,7 @@ interface MobileResultLayoutProps {
     analysisData: AnalyzeResponse | null;
     isProcessing: boolean;
     cropResults: CropResult[];
+    onReEdit?: () => void;
 }
 
 export function MobileResultLayout({
@@ -18,7 +20,8 @@ export function MobileResultLayout({
     originalImage,
     analysisData,
     isProcessing,
-    cropResults
+    cropResults,
+    onReEdit
 }: MobileResultLayoutProps) {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -34,6 +37,15 @@ export function MobileResultLayout({
                     <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
                     {isProcessing && <LoadingSpinner isMobile={true} />}
                 </div>
+                {onReEdit && (
+                    <button
+                        onClick={onReEdit}
+                        className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-sm font-bold border border-yellow-500/30 w-full"
+                    >
+                        <Edit3 className="w-4 h-4 text-yellow-400" />
+                        矩形を再調整
+                    </button>
+                )}
             </div>
 
             {/* Mobile: Results section */}

@@ -1,33 +1,50 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { ApiKeyModal } from './components/ApiKeyModal';
 import { ImageUploader } from './components/ImageUploader';
-import { analyzeImage, type AnalyzeResponse } from './lib/geminiSplitter';
+import { analyzeImage, type AnalyzeResponse, type SplitResult } from './lib/geminiSplitter';
 import { processImageCrops, fileToBase64, type CropResult } from './lib/imageProcessor';
 import { saveHistory } from './lib/db';
 import { useMobile } from './hooks/useMobile';
 import { cn } from './lib/utils';
-import { RotateCcw, Download, Settings } from 'lucide-react';
+import { RotateCcw, Download, Settings, Play, Edit3 } from 'lucide-react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { MobileResultLayout } from './components/layouts/MobileResultLayout';
 import { DesktopResultLayout } from './components/layouts/DesktopResultLayout';
+import { RectangleEditor } from './components/RectangleEditor';
+import { RectangleControls } from './components/RectangleControls';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { ErrorDisplay } from './components/ui/ErrorDisplay';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
   const [model, setModel] = useState(() => localStorage.getItem('gemini_model') || 'gemini-2.5-flash-lite');
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
 
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [analysisData, setAnalysisData] = useState<AnalyzeResponse | null>(null);
+  const [editableCrops, setEditableCrops] = useState<SplitResult[]>([]);
+  const [selectedCropIndex, setSelectedCropIndex] = useState(0);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [adjustStep, setAdjustStep] = useState(0.02);
   const [cropResults, setCropResults] = useState<CropResult[]>([]);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Mobile detection with resize listener
   const isMobile = useMobile();
-  // Reference for file input (for mobile bottom action bar)
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Derive current phase
+  const phase = (() => {
+    if (!originalImage) return 'upload' as const;
+    if (isProcessing && !isEditMode) return 'analyzing' as const;
+    if (isProcessing && isEditMode) return 'cropping' as const;
+    if (isEditMode) return 'editing' as const;
+    if (cropResults.length > 0) return 'results' as const;
+    return 'preview' as const;
+  })();
 
   useEffect(() => {
     if (!apiKey) {
@@ -49,43 +66,42 @@ function App() {
     setIsKeyModalOpen(false);
   };
 
+  // Step 1: Load image (don't auto-analyze)
   const handleImageSelect = async (file: File) => {
     setError(null);
     setAnalysisData(null);
+    setEditableCrops([]);
     setCropResults([]);
+    setIsEditMode(false);
 
     try {
       const base64 = await fileToBase64(file);
+      setOriginalFile(file);
       setOriginalImage(base64);
-
-      handleAnalyze(file, base64);
     } catch (e) {
       console.error(e);
       setError("画像の読み込みに失敗しました。");
     }
   };
 
-  const handleAnalyze = async (file: File, base64: string) => {
+  // Step 2: User clicks "解析開始"
+  const handleStartAnalysis = async () => {
     if (!apiKey) {
       setIsKeyModalOpen(true);
       return;
     }
+    if (!originalImage || !originalFile) return;
 
     setIsProcessing(true);
+    setIsEditMode(false);
     setError(null);
 
     try {
-      // 1. Analyze with Gemini
-      const data = await analyzeImage(base64, apiKey, model);
+      const data = await analyzeImage(originalImage, apiKey, model);
       setAnalysisData(data);
-
-      // 2. Crop images
-      const results = await processImageCrops(file, data);
-      setCropResults(results);
-
-      // 3. Save specific history (fire and forget)
-      saveHistory(file.name, results).catch(console.error);
-
+      setEditableCrops(data.crops.map(c => ({ ...c, box_2d: [...c.box_2d] as [number, number, number, number] })));
+      setSelectedCropIndex(0);
+      setIsEditMode(true);
     } catch (e: any) {
       console.error(e);
       const msg = e.message || "";
@@ -99,17 +115,54 @@ function App() {
     }
   };
 
+  // Step 3: Update a crop's coordinates during editing
+  const handleUpdateCrop = useCallback((index: number, newBox: [number, number, number, number]) => {
+    setEditableCrops(prev => prev.map((crop, i) =>
+      i === index ? { ...crop, box_2d: newBox } : crop
+    ));
+  }, []);
+
+  // Step 4: Execute crop with adjusted rectangles
+  const handleExecuteCrop = async () => {
+    if (!originalFile || editableCrops.length === 0) return;
+
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      const editedAnalysis: AnalyzeResponse = { crops: editableCrops };
+      const results = await processImageCrops(originalFile, editedAnalysis);
+      setCropResults(results);
+      setIsEditMode(false);
+      saveHistory(originalFile.name, results).catch(console.error);
+    } catch (e: any) {
+      console.error(e);
+      setError(e.message || "分割に失敗しました。");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Go back to editing mode from results
+  const handleReEdit = () => {
+    setCropResults([]);
+    setIsEditMode(true);
+  };
+
   const handleReset = () => {
+    setOriginalFile(null);
     setOriginalImage(null);
     setAnalysisData(null);
+    setEditableCrops([]);
     setCropResults([]);
+    setIsEditMode(false);
     setError(null);
   };
 
   return (
     <div className={cn(
       "min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans",
-      isMobile && originalImage && "pb-20"
+      isMobile && phase === 'results' && "pb-20"
     )}>
       {/* Hidden file input for mobile bottom action bar */}
       <input
@@ -135,7 +188,8 @@ function App() {
           isMobile={isMobile}
         />
 
-        {!originalImage ? (
+        {/* Phase: Upload */}
+        {phase === 'upload' && (
           <div className="py-4 sm:py-12">
             <ImageUploader onImageSelect={handleImageSelect} isProcessing={isProcessing} isMobile={isMobile} />
 
@@ -154,30 +208,123 @@ function App() {
               </div>
             )}
           </div>
-        ) : isMobile ? (
-          <MobileResultLayout
-            error={error}
-            originalImage={originalImage}
-            analysisData={analysisData}
-            isProcessing={isProcessing}
-            cropResults={cropResults}
-          />
-        ) : (
-          <DesktopResultLayout
-            error={error}
-            originalImage={originalImage}
-            analysisData={analysisData}
-            isProcessing={isProcessing}
-            cropResults={cropResults}
-            onReset={handleReset}
-          />
+        )}
+
+        {/* Phase: Preview (image loaded, waiting for start) */}
+        {phase === 'preview' && originalImage && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">画像プレビュー</h2>
+              <p className="text-sm text-gray-500">画像を確認して「解析開始」を押してください</p>
+            </div>
+            <div className="max-w-2xl mx-auto">
+              <div className="rounded-2xl sm:rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-xl">
+                <img src={originalImage} alt="Preview" className="w-full h-auto block" />
+              </div>
+            </div>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors font-bold border border-gray-600"
+              >
+                <RotateCcw className="w-5 h-5" />
+                キャンセル
+              </button>
+              <button
+                onClick={handleStartAnalysis}
+                className="flex items-center gap-2 px-8 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white rounded-xl transition-colors font-bold text-lg shadow-lg shadow-mint-500/20"
+              >
+                <Play className="w-5 h-5" />
+                解析開始
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Phase: Analyzing (loading overlay on image) */}
+        {phase === 'analyzing' && originalImage && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="max-w-2xl mx-auto">
+              <div className="relative rounded-2xl sm:rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-xl">
+                <img src={originalImage} alt="Analyzing" className="w-full h-auto block opacity-50" />
+                <LoadingSpinner isMobile={isMobile} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Phase: Editing (rectangle adjustment) */}
+        {(phase === 'editing' || phase === 'cropping') && originalImage && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white">矩形調整</h2>
+                <p className="text-sm text-gray-500 mt-1">矩形をドラッグまたはD-padで調整してください</p>
+              </div>
+            </div>
+
+            <ErrorDisplay error={error} isMobile={isMobile} />
+
+            <div className={cn(
+              "grid gap-4 sm:gap-6",
+              isMobile ? "grid-cols-1" : "grid-cols-[1fr_340px]"
+            )}>
+              <div className="relative">
+                <RectangleEditor
+                  imageSrc={originalImage}
+                  crops={editableCrops}
+                  selectedIndex={selectedCropIndex}
+                  onSelectCrop={setSelectedCropIndex}
+                  onUpdateCrop={handleUpdateCrop}
+                  isMobile={isMobile}
+                />
+                {phase === 'cropping' && <LoadingSpinner isMobile={isMobile} />}
+              </div>
+              <RectangleControls
+                crops={editableCrops}
+                selectedIndex={selectedCropIndex}
+                onSelectCrop={setSelectedCropIndex}
+                onUpdateCrop={handleUpdateCrop}
+                onExecute={handleExecuteCrop}
+                onReset={handleReset}
+                step={adjustStep}
+                onStepChange={setAdjustStep}
+                isMobile={isMobile}
+                isProcessing={isProcessing}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Phase: Results */}
+        {phase === 'results' && originalImage && (
+          isMobile ? (
+            <MobileResultLayout
+              error={error}
+              originalImage={originalImage}
+              analysisData={{ crops: editableCrops }}
+              isProcessing={isProcessing}
+              cropResults={cropResults}
+              onReEdit={handleReEdit}
+            />
+          ) : (
+            <DesktopResultLayout
+              error={error}
+              originalImage={originalImage}
+              analysisData={{ crops: editableCrops }}
+              isProcessing={isProcessing}
+              cropResults={cropResults}
+              onReset={handleReset}
+              onReEdit={handleReEdit}
+            />
+          )
         )}
       </main>
 
       <Footer isMobile={isMobile} originalImage={originalImage} />
 
       {/* Mobile: Fixed bottom action bar when viewing results */}
-      {isMobile && originalImage && (
+      {isMobile && phase === 'results' && (
         <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-50 pb-safe">
           <div className="flex items-center justify-around px-4 py-3 gap-3">
             <button
@@ -186,6 +333,13 @@ function App() {
             >
               <RotateCcw className="w-5 h-5" />
               <span>クリア</span>
+            </button>
+            <button
+              onClick={handleReEdit}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-base font-bold border border-yellow-500/30"
+            >
+              <Edit3 className="w-5 h-5 text-yellow-400" />
+              <span>再調整</span>
             </button>
             <button
               onClick={() => {
@@ -204,7 +358,7 @@ function App() {
               className="flex-[1.5] flex items-center justify-center gap-2 px-4 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-xl transition-colors text-base font-bold shadow-lg shadow-mint-500/20"
             >
               <Download className="w-5 h-5" />
-              <span>全てダウンロード</span>
+              <span>全DL</span>
             </button>
           </div>
         </div>
