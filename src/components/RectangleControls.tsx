@@ -149,28 +149,20 @@ export function RectangleControls({
         const crop = crops[selectedIndex];
         if (!crop) return;
         let [ymin, xmin, ymax, xmax] = crop.box_2d;
-        const halfStep = step / 2;
 
+        // Anchor at top-left: only move ymax/xmax
         switch (direction) {
             case 'up': // taller
-                ymin = Math.max(0, ymin - halfStep);
-                ymax = Math.min(1, ymax + halfStep);
+                ymax = Math.min(1, ymax + step);
                 break;
             case 'down': // shorter
-                if ((ymax - ymin) - step >= MIN_DIM) {
-                    ymin = clamp(ymin + halfStep, 0, ymax - MIN_DIM);
-                    ymax = clamp(ymax - halfStep, ymin + MIN_DIM, 1);
-                }
+                ymax = Math.max(ymin + MIN_DIM, ymax - step);
                 break;
             case 'right': // wider
-                xmin = Math.max(0, xmin - halfStep);
-                xmax = Math.min(1, xmax + halfStep);
+                xmax = Math.min(1, xmax + step);
                 break;
             case 'left': // narrower
-                if ((xmax - xmin) - step >= MIN_DIM) {
-                    xmin = clamp(xmin + halfStep, 0, xmax - MIN_DIM);
-                    xmax = clamp(xmax - halfStep, xmin + MIN_DIM, 1);
-                }
+                xmax = Math.max(xmin + MIN_DIM, xmax - step);
                 break;
         }
 
