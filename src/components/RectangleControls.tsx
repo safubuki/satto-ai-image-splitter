@@ -19,8 +19,8 @@ interface RectangleControlsProps {
 }
 
 const STEP_OPTIONS = [
-    { label: '微', value: 0.005 },
-    { label: '標', value: 0.02 },
+    { label: '小', value: 0.005 },
+    { label: '中', value: 0.02 },
     { label: '大', value: 0.05 },
 ];
 
@@ -149,12 +149,13 @@ export function RectangleControls({
         let [ymin, xmin, ymax, xmax] = crop.box_2d;
 
         // Anchor at top-left: only move ymax/xmax
+        // Up/Down move the bottom edge in that direction
         switch (direction) {
-            case 'up': // taller
-                ymax = Math.min(1, ymax + step);
-                break;
-            case 'down': // shorter
+            case 'up': // bottom edge moves up → shorter
                 ymax = Math.max(ymin + MIN_DIM, ymax - step);
+                break;
+            case 'down': // bottom edge moves down → taller
+                ymax = Math.min(1, ymax + step);
                 break;
             case 'right': // wider
                 xmax = Math.min(1, xmax + step);
@@ -194,15 +195,6 @@ export function RectangleControls({
                     )}
                 </div>
                 <button
-                    onClick={() => onDeleteCrop(selectedIndex)}
-                    disabled={crops.length <= 1}
-                    className="p-2 rounded-lg bg-gray-800 border border-red-900/50 text-red-400 disabled:opacity-30 hover:bg-red-950 active:bg-red-900 transition-colors"
-                    style={{ touchAction: 'none' }}
-                    title="この矩形を削除"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </button>
-                <button
                     onClick={() => onSelectCrop(Math.min(crops.length - 1, selectedIndex + 1))}
                     disabled={selectedIndex === crops.length - 1}
                     className="p-2 rounded-lg bg-gray-800 border border-gray-600 disabled:opacity-30 hover:bg-gray-700 active:bg-gray-600 transition-colors"
@@ -210,33 +202,27 @@ export function RectangleControls({
                 >
                     <ChevronRight className="w-4 h-4" />
                 </button>
-                <button
-                    onClick={onAddCrop}
-                    className="p-2 rounded-lg bg-gray-800 border border-mint-700/50 text-mint-400 hover:bg-mint-950 active:bg-mint-900 transition-colors"
-                    style={{ touchAction: 'none' }}
-                    title="矩形を追加"
-                >
-                    <Plus className="w-4 h-4" />
-                </button>
             </div>
 
-            {/* Step size selector */}
-            <div className="flex items-center gap-2 justify-center">
-                <span className="text-gray-500 text-sm">調整量:</span>
-                {STEP_OPTIONS.map(opt => (
-                    <button
-                        key={opt.value}
-                        onClick={() => onStepChange(opt.value)}
-                        className={cn(
-                            "px-3.5 py-1.5 rounded-lg text-sm font-bold transition-colors",
-                            step === opt.value
-                                ? "bg-mint-600 text-white shadow-md shadow-mint-500/20"
-                                : "bg-gray-800 text-gray-400 hover:bg-gray-700 border border-gray-600"
-                        )}
-                    >
-                        {opt.label}
-                    </button>
-                ))}
+            {/* Add / Delete buttons */}
+            <div className="flex items-center gap-3 justify-center">
+                <button
+                    onClick={onAddCrop}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-800 border border-mint-700/50 text-mint-400 hover:bg-mint-950 active:bg-mint-900 transition-colors text-sm font-bold"
+                    style={{ touchAction: 'none' }}
+                >
+                    <Plus className="w-3.5 h-3.5" />
+                    追加
+                </button>
+                <button
+                    onClick={() => onDeleteCrop(selectedIndex)}
+                    disabled={crops.length <= 1}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-800 border border-red-900/50 text-red-400 disabled:opacity-30 hover:bg-red-950 active:bg-red-900 transition-colors text-sm font-bold"
+                    style={{ touchAction: 'none' }}
+                >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    削除
+                </button>
             </div>
 
             {/* D-Pads */}
@@ -265,6 +251,27 @@ export function RectangleControls({
                     sublabel="↑↓高さ  ←→幅"
                     centerIcon={<Maximize2 className="w-4 h-4 text-amber-400" />}
                 />
+            </div>
+
+            {/* Step size selector */}
+            <div className="flex flex-col items-center gap-1.5">
+                <span className="text-gray-500 text-sm">調整量</span>
+                <div className="flex items-center gap-2">
+                {STEP_OPTIONS.map(opt => (
+                    <button
+                        key={opt.value}
+                        onClick={() => onStepChange(opt.value)}
+                        className={cn(
+                            "px-3.5 py-1.5 rounded-lg text-sm font-bold transition-colors",
+                            step === opt.value
+                                ? "bg-mint-600 text-white shadow-md shadow-mint-500/20"
+                                : "bg-gray-800 text-gray-400 hover:bg-gray-700 border border-gray-600"
+                        )}
+                    >
+                        {opt.label}
+                    </button>
+                ))}
+                </div>
             </div>
 
             {/* Coordinate display */}

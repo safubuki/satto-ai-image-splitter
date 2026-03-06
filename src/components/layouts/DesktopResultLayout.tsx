@@ -1,4 +1,4 @@
-import { RotateCcw, Edit3 } from 'lucide-react';
+import { RotateCcw, Edit3, Download } from 'lucide-react';
 import { ResultGallery } from '../ResultGallery';
 import { ImageOverlay } from '../ImageOverlay';
 import { ErrorDisplay } from '../ui/ErrorDisplay';
@@ -33,7 +33,7 @@ export function DesktopResultLayout({
 
             <ErrorDisplay error={error} isMobile={false} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
                 {/* Left: Visualization */}
                 <div className="space-y-4 sm:space-y-4">
                     <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
@@ -65,9 +65,31 @@ export function DesktopResultLayout({
 
                 {/* Right: Results */}
                 <div className="space-y-4 sm:space-y-4">
-                    <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割された画像</p>
+                    <div className="flex items-center justify-between">
+                        <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割画像 ({cropResults.length})</p>
+                        {cropResults.length > 0 && (
+                            <button
+                                onClick={() => {
+                                    cropResults.forEach((crop, i) => {
+                                        setTimeout(() => {
+                                            const link = document.createElement('a');
+                                            link.href = crop.url;
+                                            link.download = `${crop.label.replace(/\s+/g, '_')}_${crop.id.slice(0, 4)}.jpg`;
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+                                        }, i * 300);
+                                    });
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white transition-colors font-bold shadow-lg shadow-mint-500/20"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span>全てダウンロード</span>
+                            </button>
+                        )}
+                    </div>
                     {cropResults.length > 0 ? (
-                        <ResultGallery results={cropResults} isMobile={false} />
+                        <ResultGallery results={cropResults} isMobile={false} showHeader={false} />
                     ) : (
                         <div className="h-full min-h-[250px] sm:min-h-[400px] border-2 border-gray-800 border-dashed rounded-2xl sm:rounded-xl flex items-center justify-center text-gray-600 text-lg sm:text-2xl">
                             {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}

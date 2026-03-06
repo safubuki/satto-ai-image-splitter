@@ -5,9 +5,10 @@ import { cn } from '../lib/utils';
 interface ResultGalleryProps {
     results: CropResult[];
     isMobile?: boolean;
+    showHeader?: boolean;
 }
 
-export function ResultGallery({ results, isMobile = false }: ResultGalleryProps) {
+export function ResultGallery({ results, isMobile = false, showHeader = true }: ResultGalleryProps) {
     if (results.length === 0) return null;
 
     const handleDownload = (crop: CropResult) => {
@@ -28,14 +29,13 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
 
     return (
         <div className={cn("space-y-6", isMobile && "space-y-8")}>
-            {/* Desktop only: title and download all button */}
-            {!isMobile && (
+            {/* Desktop only: download all button */}
+            {!isMobile && showHeader && (
                 <div className="flex items-center justify-between gap-4">
                     <div>
                         <h3 className="font-bold text-white text-2xl mb-1">
                             分割画像 ({results.length})
                         </h3>
-                        <p className="text-sm text-gray-500">分割された画像</p>
                     </div>
                     <button
                         onClick={handleDownloadAll}
@@ -46,6 +46,7 @@ export function ResultGallery({ results, isMobile = false }: ResultGalleryProps)
                     </button>
                 </div>
             )}
+
 
             {/* Mobile: 1 column, Desktop: 2 columns */}
             <div className={cn(

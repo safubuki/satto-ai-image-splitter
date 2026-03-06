@@ -289,8 +289,8 @@ function App() {
             <ErrorDisplay error={error} isMobile={isMobile} />
 
             <div className={cn(
-              "grid gap-4 sm:gap-6",
-              isMobile ? "grid-cols-1" : "grid-cols-[1fr_340px]"
+              "grid gap-4 sm:gap-6 items-end",
+              isMobile ? "grid-cols-1" : "grid-cols-[1fr_360px]"
             )}>
               <div className="relative">
                 <RectangleEditor
