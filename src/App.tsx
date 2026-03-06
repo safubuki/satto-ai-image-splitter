@@ -23,7 +23,6 @@ function App() {
 
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
-  const [analysisData, setAnalysisData] = useState<AnalyzeResponse | null>(null);
   const [editableCrops, setEditableCrops] = useState<SplitResult[]>([]);
   const [selectedCropIndex, setSelectedCropIndex] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -69,7 +68,6 @@ function App() {
   // Step 1: Load image (don't auto-analyze)
   const handleImageSelect = async (file: File) => {
     setError(null);
-    setAnalysisData(null);
     setEditableCrops([]);
     setCropResults([]);
     setIsEditMode(false);
@@ -98,7 +96,6 @@ function App() {
 
     try {
       const data = await analyzeImage(originalImage, apiKey, model);
-      setAnalysisData(data);
       setEditableCrops(data.crops.map(c => ({ ...c, box_2d: [...c.box_2d] as [number, number, number, number] })));
       setSelectedCropIndex(0);
       setIsEditMode(true);
@@ -152,7 +149,6 @@ function App() {
   const handleReset = () => {
     setOriginalFile(null);
     setOriginalImage(null);
-    setAnalysisData(null);
     setEditableCrops([]);
     setCropResults([]);
     setIsEditMode(false);
