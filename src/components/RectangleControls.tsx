@@ -22,10 +22,6 @@ const STEP_OPTIONS = [
     { label: '大', value: 0.05 },
 ];
 
-function clamp(v: number, min: number, max: number) {
-    return Math.max(min, Math.min(max, v));
-}
-
 // D-pad button with press-and-hold repeat
 function DPadButton({ onAction, icon, colorClass, size }: {
     onAction: () => void;
