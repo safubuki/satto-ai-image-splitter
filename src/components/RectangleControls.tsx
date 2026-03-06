@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { type SplitResult } from '../lib/geminiSplitter';
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Move, Maximize2, Scissors } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Move, Maximize2, Scissors, Trash2, Plus } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 interface RectangleControlsProps {
@@ -8,6 +8,8 @@ interface RectangleControlsProps {
     selectedIndex: number;
     onSelectCrop: (index: number) => void;
     onUpdateCrop: (index: number, newBox: [number, number, number, number]) => void;
+    onDeleteCrop: (index: number) => void;
+    onAddCrop: () => void;
     onExecute: () => void;
     onReset: () => void;
     step: number;
@@ -118,7 +120,7 @@ function DPad({ onUp, onDown, onLeft, onRight, colorClass, centerColorClass, btn
 }
 
 export function RectangleControls({
-    crops, selectedIndex, onSelectCrop, onUpdateCrop,
+    crops, selectedIndex, onSelectCrop, onUpdateCrop, onDeleteCrop, onAddCrop,
     onExecute, onReset, step, onStepChange, isMobile, isProcessing
 }: RectangleControlsProps) {
     const btnSize = isMobile ? 48 : 40;
@@ -192,12 +194,29 @@ export function RectangleControls({
                     )}
                 </div>
                 <button
+                    onClick={() => onDeleteCrop(selectedIndex)}
+                    disabled={crops.length <= 1}
+                    className="p-2 rounded-lg bg-gray-800 border border-red-900/50 text-red-400 disabled:opacity-30 hover:bg-red-950 active:bg-red-900 transition-colors"
+                    style={{ touchAction: 'none' }}
+                    title="この矩形を削除"
+                >
+                    <Trash2 className="w-4 h-4" />
+                </button>
+                <button
                     onClick={() => onSelectCrop(Math.min(crops.length - 1, selectedIndex + 1))}
                     disabled={selectedIndex === crops.length - 1}
                     className="p-2 rounded-lg bg-gray-800 border border-gray-600 disabled:opacity-30 hover:bg-gray-700 active:bg-gray-600 transition-colors"
                     style={{ touchAction: 'none' }}
                 >
                     <ChevronRight className="w-4 h-4" />
+                </button>
+                <button
+                    onClick={onAddCrop}
+                    className="p-2 rounded-lg bg-gray-800 border border-mint-700/50 text-mint-400 hover:bg-mint-950 active:bg-mint-900 transition-colors"
+                    style={{ touchAction: 'none' }}
+                    title="矩形を追加"
+                >
+                    <Plus className="w-4 h-4" />
                 </button>
             </div>
 

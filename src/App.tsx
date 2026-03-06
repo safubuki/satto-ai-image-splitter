@@ -6,7 +6,7 @@ import { processImageCrops, fileToBase64, type CropResult } from './lib/imagePro
 import { saveHistory } from './lib/db';
 import { useMobile } from './hooks/useMobile';
 import { cn } from './lib/utils';
-import { RotateCcw, Download, Settings, Play, Edit3 } from 'lucide-react';
+import { RotateCcw, Download, Settings, Play, Edit3, Hand } from 'lucide-react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { MobileResultLayout } from './components/layouts/MobileResultLayout';
@@ -114,6 +114,26 @@ function App() {
     ));
   }, []);
 
+  // Delete a crop from the list
+  const handleDeleteCrop = useCallback((index: number) => {
+    setEditableCrops(prev => {
+      if (prev.length <= 1) return prev;
+      const next = prev.filter((_, i) => i !== index);
+      return next;
+    });
+    setSelectedCropIndex(prev => prev >= editableCrops.length - 1 ? Math.max(0, prev - 1) : prev);
+  }, [editableCrops.length]);
+
+  // Add a new crop rectangle
+  const handleAddCrop = useCallback(() => {
+    const newCrop: SplitResult = {
+      label: `manual ${editableCrops.length + 1}`,
+      box_2d: [0.1, 0.1, 0.5, 0.5],
+    };
+    setEditableCrops(prev => [...prev, newCrop]);
+    setSelectedCropIndex(editableCrops.length);
+  }, [editableCrops.length]);
+
   // Step 4: Execute crop with adjusted rectangles
   const handleExecuteCrop = async () => {
     if (!originalFile || editableCrops.length === 0) return;
@@ -207,27 +227,38 @@ function App() {
             <ErrorDisplay error={error} isMobile={isMobile} />
             <div className="text-center">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">画像プレビュー</h2>
-              <p className="text-sm text-gray-500">画像を確認して「解析開始」を押してください</p>
+              <p className="text-sm text-gray-500">AI解析、または手動で矩形を指定して分割できます</p>
             </div>
             <div className="max-w-2xl mx-auto">
               <div className="rounded-2xl sm:rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-xl">
                 <img src={originalImage} alt="Preview" className="w-full h-auto block" />
               </div>
             </div>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-3 sm:gap-4">
               <button
                 onClick={handleReset}
-                className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors font-bold border border-gray-600"
+                className="flex items-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors font-bold border border-gray-600"
               >
                 <RotateCcw className="w-5 h-5" />
                 キャンセル
               </button>
               <button
+                onClick={() => {
+                  setEditableCrops([{ label: 'manual 1', box_2d: [0.05, 0.05, 0.95, 0.95] }]);
+                  setSelectedCropIndex(0);
+                  setIsEditMode(true);
+                }}
+                className="flex items-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors font-bold border border-amber-500/40"
+              >
+                <Hand className="w-5 h-5 text-amber-400" />
+                手動モード
+              </button>
+              <button
                 onClick={handleStartAnalysis}
-                className="flex items-center gap-2 px-8 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white rounded-xl transition-colors font-bold text-lg shadow-lg shadow-mint-500/20"
+                className="flex items-center gap-2 px-6 sm:px-8 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white rounded-xl transition-colors font-bold text-lg shadow-lg shadow-mint-500/20"
               >
                 <Play className="w-5 h-5" />
-                解析開始
+                AI解析
               </button>
             </div>
           </div>
@@ -277,6 +308,8 @@ function App() {
                 selectedIndex={selectedCropIndex}
                 onSelectCrop={setSelectedCropIndex}
                 onUpdateCrop={handleUpdateCrop}
+                onDeleteCrop={handleDeleteCrop}
+                onAddCrop={handleAddCrop}
                 onExecute={handleExecuteCrop}
                 onReset={handleReset}
                 step={adjustStep}
