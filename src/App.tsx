@@ -100,13 +100,8 @@ function App() {
       setSelectedCropIndex(0);
       setIsEditMode(true);
     } catch (e: any) {
-      console.error(e);
-      const msg = e.message || "";
-      if (msg.includes("429") || msg.includes("quota")) {
-        setError("API制限(Quota)を超えました。しばらく待ってから再度お試しください。");
-      } else {
-        setError(msg || "解析に失敗しました。もう一度お試しください。");
-      }
+      console.error("Analysis error:", e);
+      setError(e.message || "解析に失敗しました。もう一度お試しください。");
     } finally {
       setIsProcessing(false);
     }
@@ -209,6 +204,7 @@ function App() {
         {/* Phase: Preview (image loaded, waiting for start) */}
         {phase === 'preview' && originalImage && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <ErrorDisplay error={error} isMobile={isMobile} />
             <div className="text-center">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">画像プレビュー</h2>
               <p className="text-sm text-gray-500">画像を確認して「解析開始」を押してください</p>

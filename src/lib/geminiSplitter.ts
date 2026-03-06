@@ -239,11 +239,23 @@ export async function analyzeImage(fileBase64: string, apiKey: string, modelName
             }
         });
 
-        const text = response.text || "";
+        // Check for empty/blocked responses before parsing
+        if (!response.candidates || response.candidates.length === 0) {
+            const feedback = (response as any).promptFeedback;
+            if (feedback?.blockReason) {
+                throw new Error(`コンテンツフィルターにより応答がブロックされました (${feedback.blockReason})`);
+            }
+            throw new Error('APIから空の応答が返されました。画像を変更するか、再試行してください。');
+        }
+
+        const text = response.text;
 
         // Handle code blocks if regular text is returned despite JSON instruction
-        let jsonStr = text;
-        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+        let jsonStr = text || "";
+        if (!jsonStr) {
+            throw new Error('APIからテキスト応答がありませんでした。再試行してください。');
+        }
+        const jsonMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
         if (jsonMatch) {
             jsonStr = jsonMatch[1].trim();
         }
@@ -300,6 +312,15 @@ export async function analyzeImage(fileBase64: string, apiKey: string, modelName
         }
         if (errorMessage.includes('RESOURCE_EXHAUSTED') || errorMessage.includes('429')) {
             throw new Error('API制限(Quota)を超えました(429)。しばらく待ってから再試行してください。');
+        }
+        if (errorMessage.includes('sending request') || errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError') || errorMessage.includes('network')) {
+            throw new Error('ネットワークエラーが発生しました。インターネット接続を確認して再試行してください。');
+        }
+        if (errorMessage.includes('AbortError') || errorMessage.includes('aborted')) {
+            throw new Error('リクエストが中断されました。再試行してください。');
+        }
+        if (errorMessage.includes('コンテンツフィルター') || errorMessage.includes('APIから空') || errorMessage.includes('APIからテキスト')) {
+            throw error; // Already user-friendly, re-throw as-is
         }
 
         throw new Error(`Gemini API エラー: ${errorMessage}`);
