@@ -33,67 +33,67 @@ export function DesktopResultLayout({
 
             <ErrorDisplay error={error} isMobile={false} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
-                {/* Left: Visualization */}
-                <div className="space-y-4 sm:space-y-4">
-                    <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
-                    <div className="relative rounded-2xl sm:rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
-                        <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
-                        {isProcessing && <LoadingSpinner isMobile={false} />}
-                    </div>
-                    <div className="flex justify-end gap-3">
-                        {onReEdit && (
-                            <button
-                                onClick={onReEdit}
-                                className="flex items-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 text-base sm:text-lg font-bold text-white bg-gray-800 border border-yellow-500/30 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-yellow-500/60 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] active:scale-95 active:bg-gray-700 group"
-                                title="矩形を再調整"
-                            >
-                                <Edit3 className="w-5 h-5 sm:w-5 sm:h-5 text-yellow-400" />
-                                <span className="group-hover:text-yellow-100 transition-colors">再調整</span>
-                            </button>
-                        )}
-                        <button
-                            onClick={onReset}
-                            className="flex items-center gap-2 px-8 py-3.5 sm:px-10 sm:py-4 text-base sm:text-lg font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 active:bg-gray-700 group"
-                            title="Clear and start over"
-                        >
-                            <RotateCcw className="w-5 h-5 sm:w-5 sm:h-5" />
-                            <span className="group-hover:text-red-100 transition-colors">Clear & New</span>
-                        </button>
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 items-start">
+                {/* Row 1: Titles */}
+                <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">元画像 / 解析オーバーレイ</p>
+                <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割画像 ({cropResults.length})</p>
 
-                {/* Right: Results */}
-                <div className="space-y-4 sm:space-y-4">
-                    <div className="flex items-center justify-between">
-                        <p className="text-base sm:text-xl text-gray-500 font-mono uppercase tracking-wider">分割画像 ({cropResults.length})</p>
-                        {cropResults.length > 0 && (
-                            <button
-                                onClick={() => {
-                                    cropResults.forEach((crop, i) => {
-                                        setTimeout(() => {
-                                            const link = document.createElement('a');
-                                            link.href = crop.url;
-                                            link.download = `${crop.label.replace(/\s+/g, '_')}_${crop.id.slice(0, 4)}.jpg`;
-                                            document.body.appendChild(link);
-                                            link.click();
-                                            document.body.removeChild(link);
-                                        }, i * 300);
-                                    });
-                                }}
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white transition-colors font-bold shadow-lg shadow-mint-500/20"
-                            >
-                                <Download className="w-4 h-4" />
-                                <span>全てダウンロード</span>
-                            </button>
-                        )}
-                    </div>
+                {/* Row 2: Content */}
+                <div className="relative rounded-2xl sm:rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900/50">
+                    <ImageOverlay imageSrc={originalImage} analysisData={analysisData} />
+                    {isProcessing && <LoadingSpinner isMobile={false} />}
+                </div>
+                <div>
                     {cropResults.length > 0 ? (
                         <ResultGallery results={cropResults} isMobile={false} showHeader={false} />
                     ) : (
                         <div className="h-full min-h-[250px] sm:min-h-[400px] border-2 border-gray-800 border-dashed rounded-2xl sm:rounded-xl flex items-center justify-center text-gray-600 text-lg sm:text-2xl">
                             {isProcessing ? "解析結果を待っています..." : "まだ結果がありません"}
                         </div>
+                    )}
+                </div>
+
+                {/* Row 3: Buttons (always aligned) */}
+                <div className="flex justify-center gap-3">
+                    {onReEdit && (
+                        <button
+                            onClick={onReEdit}
+                            className="flex items-center gap-2 px-6 py-3 text-base font-bold text-white bg-gray-800 border border-yellow-500/30 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-yellow-500/60 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] active:scale-95 active:bg-gray-700 group"
+                            title="矩形を調整"
+                        >
+                            <Edit3 className="w-5 h-5 text-yellow-400" />
+                            <span className="group-hover:text-yellow-100 transition-colors">矩形調整</span>
+                        </button>
+                    )}
+                    <button
+                        onClick={onReset}
+                        className="flex items-center gap-2 px-6 py-3 text-base font-bold text-white bg-gray-800 border border-gray-700 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 active:bg-gray-700 group"
+                        title="全クリア"
+                    >
+                        <RotateCcw className="w-5 h-5" />
+                        <span className="group-hover:text-red-100 transition-colors">全クリア</span>
+                    </button>
+                </div>
+                <div className="flex justify-center">
+                    {cropResults.length > 0 && (
+                        <button
+                            onClick={() => {
+                                cropResults.forEach((crop, i) => {
+                                    setTimeout(() => {
+                                        const link = document.createElement('a');
+                                        link.href = crop.url;
+                                        link.download = `${crop.label.replace(/\s+/g, '_')}_${crop.id.slice(0, 4)}.jpg`;
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }, i * 300);
+                                });
+                            }}
+                            className="flex items-center gap-2 px-6 py-3 text-base font-bold text-white bg-gray-800 border border-mint-500/30 rounded-full shadow-lg transition-all hover:bg-gray-750 hover:border-mint-500/60 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-95 active:bg-gray-700 group"
+                        >
+                            <Download className="w-5 h-5 text-mint-400" />
+                            <span className="group-hover:text-mint-100 transition-colors">全てダウンロード</span>
+                        </button>
                     )}
                 </div>
             </div>

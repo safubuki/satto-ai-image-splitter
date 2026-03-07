@@ -61,7 +61,10 @@ export function ResultGallery({ results, isMobile = false, showHeader = true }: 
                             isMobile ? "rounded-3xl" : "rounded-lg"
                         )}
                     >
-                        <div className="aspect-square w-full relative bg-gray-900/50">
+                        <div className={cn(
+                            "w-full relative bg-gray-900/50",
+                            isMobile ? "aspect-square" : "aspect-[7/5]"
+                        )}>
                             <img
                                 src={crop.url}
                                 alt={crop.label}
@@ -85,10 +88,10 @@ export function ResultGallery({ results, isMobile = false, showHeader = true }: 
                             <button
                                 onClick={() => handleDownload(crop)}
                                 className={cn(
-                                    "w-full flex items-center justify-center bg-gray-700 hover:bg-mint-600 active:bg-mint-700 hover:text-white text-gray-300 transition-colors font-bold",
+                                    "w-full flex items-center justify-center text-gray-300 font-bold transition-all",
                                     isMobile
-                                        ? "gap-2 px-4 py-3 rounded-xl text-base"
-                                        : "gap-2 px-4 py-2 rounded text-sm"
+                                        ? "gap-2 px-4 py-3 rounded-xl text-base bg-gray-700 hover:bg-mint-600 active:bg-mint-700 hover:text-white"
+                                        : "gap-2 px-4 py-2 rounded-full text-sm bg-gray-700 border border-gray-600 hover:bg-gray-650 hover:border-mint-500/50 hover:text-white active:scale-[0.98]"
                                 )}
                             >
                                 <Download className={isMobile ? "w-5 h-5" : "w-4 h-4"} />

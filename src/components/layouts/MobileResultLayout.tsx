@@ -43,7 +43,7 @@ export function MobileResultLayout({
                         className="mt-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-sm font-bold border border-yellow-500/30 w-full"
                     >
                         <Edit3 className="w-4 h-4 text-yellow-400" />
-                        矩形を再調整
+                        矩形調整
                     </button>
                 )}
             </div>
@@ -52,7 +52,6 @@ export function MobileResultLayout({
             <div className="space-y-4">
                 <div>
                     <h3 className="text-xl font-bold text-white mb-2">分割画像 ({cropResults.length})</h3>
-                    <p className="text-sm text-gray-500">分割された画像</p>
                 </div>
                 {cropResults.length > 0 ? (
                     <ResultGallery results={cropResults} isMobile={true} />

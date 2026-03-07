@@ -364,7 +364,7 @@ function App() {
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-base font-bold border border-yellow-500/30"
             >
               <Edit3 className="w-5 h-5 text-yellow-400" />
-              <span>再調整</span>
+              <span>矩形調整</span>
             </button>
             <button
               onClick={() => {
