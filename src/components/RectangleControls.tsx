@@ -186,12 +186,27 @@ export function RectangleControls({
                     <ChevronLeft className="w-4 h-4" />
                 </button>
                 <div className="flex-1 text-center min-w-0">
-                    <span className="text-yellow-400 font-bold text-base">
+                    <span className={cn(
+                        "font-bold text-yellow-400",
+                        isMobile ? "text-2xl tracking-tight" : "text-base"
+                    )}>
                         矩形 {selectedIndex + 1}
                     </span>
-                    <span className="text-gray-500 text-base"> / {crops.length}</span>
+                    <span className={cn(
+                        "text-gray-500",
+                        isMobile ? "text-2xl" : "text-base"
+                    )}> / {crops.length}</span>
                     {selectedCrop && (
-                        <p className="text-gray-400 text-xs truncate mt-0.5">{selectedCrop.label}</p>
+                        <div className="mt-2 flex justify-center">
+                            <p className={cn(
+                                "max-w-full min-w-0 rounded-full border px-3 py-1.5 font-semibold leading-tight shadow-sm shadow-black/20",
+                                isMobile
+                                    ? "bg-yellow-400/10 border-yellow-400/30 text-base text-gray-100 whitespace-normal break-words"
+                                    : "bg-gray-800/80 border-gray-700 text-sm text-gray-200 truncate"
+                            )}>
+                                {selectedCrop.label}
+                            </p>
+                        </div>
                     )}
                 </div>
                 <button

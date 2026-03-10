@@ -165,6 +165,15 @@ export function RectangleEditor({
                 const width = (xmax - xmin) * 100;
                 const height = (ymax - ymin) * 100;
                 const isSelected = i === selectedIndex;
+                const labelTone = isSelected
+                    ? 'border-yellow-300/60 bg-gray-950/80 text-yellow-50'
+                    : 'border-mint-400/40 bg-gray-950/72 text-gray-50';
+                const badgeTone = isSelected
+                    ? 'bg-yellow-400 text-black'
+                    : 'bg-mint-500 text-black';
+                const mobileBadgeTone = isSelected
+                    ? 'border-yellow-300/70 bg-yellow-400 text-black'
+                    : 'border-mint-300/60 bg-gray-950/80 text-mint-50';
 
                 return (
                     <div
@@ -185,11 +194,30 @@ export function RectangleEditor({
                         onPointerDown={(e) => handlePointerDown(e, i, isSelected ? 'move' : 'move')}
                     >
                         {/* Label */}
-                        <div className={`absolute top-0 left-0 text-[10px] font-bold px-1.5 py-0.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-full ${
-                            isSelected ? 'bg-yellow-400 text-black' : 'bg-mint-500 text-black'
-                        }`}>
-                            {i + 1}. {crop.label}
-                        </div>
+                        {isMobile ? (
+                            <div
+                                className={`pointer-events-none absolute left-1 top-1 z-20 inline-flex h-7 min-w-7 items-center justify-center rounded-full border text-[11px] font-black leading-none shadow-lg ${
+                                    mobileBadgeTone
+                                }`}
+                                aria-label={`${i + 1}. ${crop.label}`}
+                                title={`${i + 1}. ${crop.label}`}
+                            >
+                                {i + 1}
+                            </div>
+                        ) : (
+                            <div className={`pointer-events-none absolute left-1 top-1 z-20 flex max-w-[calc(100%-0.5rem)] items-center gap-1 rounded-full border px-1 py-1 shadow-lg backdrop-blur-sm ${
+                                labelTone
+                            }`}>
+                                <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-black leading-none ${
+                                    badgeTone
+                                }`}>
+                                    {i + 1}
+                                </span>
+                                <span className="min-w-0 truncate text-[10px] font-semibold leading-none">
+                                    {crop.label}
+                                </span>
+                            </div>
+                        )}
 
                         {/* Resize handles for selected rectangle */}
                         {isSelected && (
