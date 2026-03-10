@@ -175,6 +175,8 @@ function App() {
   const previewActionIconBase = "h-6 w-6 shrink-0 sm:h-5 sm:w-5";
   const previewActionLabelBase =
     "whitespace-nowrap text-[clamp(0.82rem,3.8vw,0.95rem)] leading-tight tracking-[0.02em] sm:text-base";
+  const previewPrimaryActionLabelBase =
+    "whitespace-nowrap text-[clamp(0.92rem,4vw,1.05rem)] leading-tight tracking-[0.02em] sm:text-lg";
 
   return (
     <div className={cn(
@@ -273,9 +275,7 @@ function App() {
                 )}
               >
                 <Play className={previewActionIconBase} />
-                <span className="whitespace-nowrap text-[clamp(0.92rem,4vw,1.05rem)] leading-tight tracking-[0.02em] sm:text-lg">
-                  AI解析
-                </span>
+                <span className={previewPrimaryActionLabelBase}>AI解析</span>
               </button>
             </div>
           </div>
@@ -368,20 +368,26 @@ function App() {
       {/* Mobile: Fixed bottom action bar when viewing results */}
       {isMobile && phase === 'results' && (
         <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-50 pb-safe">
-          <div className="flex items-center justify-around px-4 py-3 gap-3">
+          <div className="grid grid-cols-3 gap-3 px-4 py-3">
             <button
               onClick={handleReset}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-base font-bold"
+              className={cn(
+                previewActionButtonBase,
+                "min-h-[92px] border border-gray-600 bg-gray-800 text-white hover:bg-gray-700 active:bg-gray-600"
+              )}
             >
-              <RotateCcw className="w-5 h-5" />
-              <span>クリア</span>
+              <RotateCcw className={previewActionIconBase} />
+              <span className={previewActionLabelBase}>クリア</span>
             </button>
             <button
               onClick={handleReEdit}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors text-base font-bold border border-yellow-500/30"
+              className={cn(
+                previewActionButtonBase,
+                "min-h-[92px] border border-yellow-500/30 bg-gray-800 text-white hover:bg-gray-700 active:bg-gray-600"
+              )}
             >
-              <Edit3 className="w-5 h-5 text-yellow-400" />
-              <span>矩形調整</span>
+              <Edit3 className={cn(previewActionIconBase, "text-yellow-400")} />
+              <span className={previewActionLabelBase}>矩形調整</span>
             </button>
             <button
               onClick={() => {
@@ -397,10 +403,13 @@ function App() {
                 });
               }}
               disabled={cropResults.length === 0}
-              className="flex-[1.5] flex items-center justify-center gap-2 px-4 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 text-white rounded-xl transition-colors text-base font-bold shadow-lg shadow-mint-500/20"
+              className={cn(
+                previewActionButtonBase,
+                "min-h-[92px] border border-mint-400/20 bg-mint-600 text-white shadow-lg shadow-mint-500/20 hover:bg-mint-500 active:bg-mint-700 disabled:bg-gray-700 disabled:text-gray-400 disabled:border-gray-700"
+              )}
             >
-              <Download className="w-5 h-5" />
-              <span>全DL</span>
+              <Download className={previewActionIconBase} />
+              <span className={previewPrimaryActionLabelBase}>全DL</span>
             </button>
           </div>
         </div>
