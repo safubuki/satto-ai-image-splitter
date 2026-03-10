@@ -170,6 +170,12 @@ function App() {
     setError(null);
   };
 
+  const previewActionButtonBase =
+    "w-full flex min-h-[104px] flex-col items-center justify-center gap-2.5 rounded-[1.75rem] px-3 py-4 text-center font-bold transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:flex-row sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3";
+  const previewActionIconBase = "h-6 w-6 shrink-0 sm:h-5 sm:w-5";
+  const previewActionLabelBase =
+    "whitespace-nowrap text-[clamp(0.82rem,3.8vw,0.95rem)] leading-tight tracking-[0.02em] sm:text-base";
+
   return (
     <div className={cn(
       "min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans",
@@ -234,13 +240,16 @@ function App() {
                 <img src={originalImage} alt="Preview" className="w-full h-auto block" />
               </div>
             </div>
-            <div className="flex justify-center gap-3 sm:gap-4">
+            <div className="grid grid-cols-3 gap-3 sm:flex sm:justify-center sm:gap-4">
               <button
                 onClick={handleReset}
-                className="flex items-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors font-bold border border-gray-600"
+                className={cn(
+                  previewActionButtonBase,
+                  "border border-gray-600 bg-gray-800 text-white hover:bg-gray-700 active:bg-gray-600"
+                )}
               >
-                <RotateCcw className="w-5 h-5" />
-                キャンセル
+                <RotateCcw className={previewActionIconBase} />
+                <span className={previewActionLabelBase}>キャンセル</span>
               </button>
               <button
                 onClick={() => {
@@ -248,17 +257,25 @@ function App() {
                   setSelectedCropIndex(0);
                   setIsEditMode(true);
                 }}
-                className="flex items-center gap-2 px-5 py-3 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-white rounded-xl transition-colors font-bold border border-amber-500/40"
+                className={cn(
+                  previewActionButtonBase,
+                  "border border-amber-500/40 bg-gray-800 text-white hover:bg-gray-700 active:bg-gray-600"
+                )}
               >
-                <Hand className="w-5 h-5 text-amber-400" />
-                手動モード
+                <Hand className={cn(previewActionIconBase, "text-amber-400")} />
+                <span className={previewActionLabelBase}>手動モード</span>
               </button>
               <button
                 onClick={handleStartAnalysis}
-                className="flex items-center gap-2 px-6 sm:px-8 py-3 bg-mint-600 hover:bg-mint-500 active:bg-mint-700 text-white rounded-xl transition-colors font-bold text-lg shadow-lg shadow-mint-500/20"
+                className={cn(
+                  previewActionButtonBase,
+                  "border border-mint-400/20 bg-mint-600 text-white shadow-lg shadow-mint-500/20 hover:bg-mint-500 active:bg-mint-700 sm:px-8"
+                )}
               >
-                <Play className="w-5 h-5" />
-                AI解析
+                <Play className={previewActionIconBase} />
+                <span className="whitespace-nowrap text-[clamp(0.92rem,4vw,1.05rem)] leading-tight tracking-[0.02em] sm:text-lg">
+                  AI解析
+                </span>
               </button>
             </div>
           </div>
