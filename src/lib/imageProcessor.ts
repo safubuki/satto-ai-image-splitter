@@ -21,6 +21,14 @@ interface PixelCropRect {
     height: number;
 }
 
+function formatFileMetadata(file: File): string {
+    return `name=${file.name}, type=${file.type || "unknown"}, size=${file.size}`;
+}
+
+function formatCropMetadata(index: number, label: string, rect: PixelCropRect): string {
+    return `cropIndex=${index}, label=${label}, rect=${JSON.stringify(rect)}`;
+}
+
 function clamp(value: number, min: number, max: number): number {
     return Math.min(Math.max(value, min), max);
 }
@@ -41,7 +49,7 @@ async function decodeSourceImage(file: File): Promise<DecodedSourceImage> {
 
     const loadPromise = new Promise<void>((resolve, reject) => {
         image.onload = () => resolve();
-        image.onerror = () => reject(new Error("Image element failed to load source image."));
+        image.onerror = () => reject(new Error(`Image element failed to load source image. (${formatFileMetadata(file)})`));
     });
 
     image.src = objectUrl;
@@ -78,7 +86,9 @@ async function decodeSourceImage(file: File): Promise<DecodedSourceImage> {
         }
 
         if (!image.naturalWidth || !image.naturalHeight) {
-            throw new Error(`Invalid decoded image size: ${image.naturalWidth}x${image.naturalHeight}`);
+            throw new Error(
+                `Invalid decoded image size: ${image.naturalWidth}x${image.naturalHeight} (${formatFileMetadata(file)})`
+            );
         }
 
         return { image, objectUrl };
@@ -90,7 +100,7 @@ async function decodeSourceImage(file: File): Promise<DecodedSourceImage> {
             fileSize: file.size,
             error,
         });
-        throw new Error("The source image could not be decoded.");
+        throw new Error(`The source image could not be decoded. (${formatFileMetadata(file)})`);
     }
 }
 
@@ -148,7 +158,9 @@ export async function processImageCrops(
                 const ctx = canvas.getContext("2d");
 
                 if (!ctx) {
-                    throw new Error("Canvas 2D context is not available.");
+                    throw new Error(
+                        `Canvas 2D context is not available. (${formatFileMetadata(originalFile)}, ${formatCropMetadata(index, crop.label, rect)})`
+                    );
                 }
 
                 ctx.drawImage(image, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
@@ -156,7 +168,11 @@ export async function processImageCrops(
                 const blob = await new Promise<Blob>((resolve, reject) => {
                     canvas.toBlob((result) => {
                         if (!result) {
-                            reject(new Error("Failed to export cropped image blob."));
+                            reject(
+                                new Error(
+                                    `Failed to export cropped image blob. (${formatFileMetadata(originalFile)}, ${formatCropMetadata(index, crop.label, rect)})`
+                                )
+                            );
                             return;
                         }
                         resolve(result);
