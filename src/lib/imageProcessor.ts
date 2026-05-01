@@ -21,6 +21,7 @@ interface PixelCropRect {
     height: number;
 }
 
+// Match the app's previous JPEG export balance between fidelity and file size.
 const CROP_JPEG_QUALITY = 0.92;
 
 function formatFileMetadata(file: File): string {
@@ -57,20 +58,6 @@ async function decodeSourceImage(file: File): Promise<DecodedSourceImage> {
     image.src = objectUrl;
 
     try {
-        if (typeof createImageBitmap === "function") {
-            try {
-                const bitmap = await createImageBitmap(file);
-                bitmap.close();
-            } catch (error) {
-                console.warn("[image-decode] createImageBitmap failed, using HTMLImageElement fallback", {
-                    fileName: file.name,
-                    fileType: file.type,
-                    fileSize: file.size,
-                    error,
-                });
-            }
-        }
-
         if (typeof image.decode === "function") {
             try {
                 await image.decode();
@@ -108,6 +95,7 @@ async function decodeSourceImage(file: File): Promise<DecodedSourceImage> {
 
 function getPixelCropRect(box: CropBox, width: number, height: number): PixelCropRect {
     const [ymin, xmin, ymax, xmax] = clampCropBox(box);
+    // Cap the starting point at the last valid source pixel while still allowing 1px crops.
     const x = clamp(Math.floor(xmin * width), 0, Math.max(width - 1, 0));
     const y = clamp(Math.floor(ymin * height), 0, Math.max(height - 1, 0));
     const right = clamp(Math.ceil(xmax * width), x + 1, width);
