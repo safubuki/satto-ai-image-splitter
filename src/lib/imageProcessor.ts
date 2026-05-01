@@ -186,7 +186,7 @@ export async function processImageCrops(
                     id: crypto.randomUUID(),
                     blob,
                     url,
-                    label: crop.label
+                    label: crop.label,
                 });
             } catch (error) {
                 console.error("[split-image] crop failed", {
