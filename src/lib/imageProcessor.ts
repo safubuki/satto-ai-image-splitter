@@ -21,6 +21,8 @@ interface PixelCropRect {
     height: number;
 }
 
+const CROP_JPEG_QUALITY = 0.92;
+
 function formatFileMetadata(file: File): string {
     return `name=${file.name}, type=${file.type || "unknown"}, size=${file.size}`;
 }
@@ -176,7 +178,7 @@ export async function processImageCrops(
                             return;
                         }
                         resolve(result);
-                    }, "image/jpeg", 0.92);
+                    }, "image/jpeg", CROP_JPEG_QUALITY);
                 });
 
                 const url = URL.createObjectURL(blob);
