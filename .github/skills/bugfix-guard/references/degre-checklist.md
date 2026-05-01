@@ -38,6 +38,7 @@
 | チェック項目 | 関連ファイル |
 |-------------|-------------|
 | `createImageBitmap` / Canvas / `toBlob` 失敗時の扱いがあるか | `src/lib/imageProcessor.ts` |
+| `HTMLImageElement` + Object URL のデコード経路があり、`drawImage` 完了まで `revokeObjectURL` を遅らせているか | `src/lib/imageProcessor.ts` |
 | `URL.createObjectURL` 利用時に解放方針を検討したか | `src/lib/imageProcessor.ts`, `src/App.tsx`, `src/components/ResultGallery.tsx` |
 | 保存処理（IndexedDB）が失敗しても致命停止しないか | `src/lib/db.ts`, `src/App.tsx` |
 
