@@ -22,6 +22,7 @@ interface PixelCropRect {
 }
 
 // Match the app's previous JPEG export balance between fidelity and file size.
+const CROP_IMAGE_MIME_TYPE = "image/jpeg";
 const CROP_JPEG_QUALITY = 0.92;
 
 function formatFileMetadata(file: File): string {
@@ -104,6 +105,7 @@ function getPixelCropRect(box: CropBox, width: number, height: number): PixelCro
     return {
         x,
         y,
+        // Keep degenerate or edge-clamped boxes exportable instead of producing a 0px canvas.
         width: Math.max(1, right - x),
         height: Math.max(1, bottom - y),
     };
@@ -166,7 +168,7 @@ export async function processImageCrops(
                             return;
                         }
                         resolve(result);
-                    }, "image/jpeg", CROP_JPEG_QUALITY);
+                    }, CROP_IMAGE_MIME_TYPE, CROP_JPEG_QUALITY);
                 });
 
                 const url = URL.createObjectURL(blob);
