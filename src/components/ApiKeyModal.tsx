@@ -13,12 +13,33 @@ interface ApiKeyModalProps {
 }
 
 export const MODELS = [
-    { id: 'gemini-2.5-flash-lite', name: 'Gemini 2.5 Flash Lite (推奨・高速)' },
-    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (高精度)' },
+    { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite (推奨・高速)' },
+    { id: 'gemini-3.5-flash', name: 'Gemini 3.5 Flash (高精度)' },
     { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro (最高精度)' },
 ];
 
-export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '', initialModel = 'gemini-2.5-flash-lite', isMobile = false }: ApiKeyModalProps) {
+export const DEFAULT_MODEL = MODELS[0].id;
+
+// Maps retired/renamed model IDs to their current equivalent so users with an
+// old value saved in localStorage don't hit a 404 (NOT_FOUND) from the API.
+const RETIRED_MODEL_MAP: Record<string, string> = {
+    'gemini-2.5-flash-lite': 'gemini-3.1-flash-lite',
+    'gemini-2.5-flash': 'gemini-3.5-flash',
+    'gemini-2.0-flash-lite': 'gemini-3.1-flash-lite',
+    'gemini-2.0-flash': 'gemini-3.5-flash',
+};
+
+/**
+ * Resolves a stored model ID to a currently-supported one. Retired IDs are
+ * migrated to their replacement; unknown IDs fall back to the default model.
+ */
+export function resolveModel(stored: string | null | undefined): string {
+    if (!stored) return DEFAULT_MODEL;
+    if (MODELS.some((m) => m.id === stored)) return stored;
+    return RETIRED_MODEL_MAP[stored] ?? DEFAULT_MODEL;
+}
+
+export function ApiKeyModal({ isOpen, onSave, onClear, onClose, initialKey = '', initialModel = 'gemini-3.1-flash-lite', isMobile = false }: ApiKeyModalProps) {
     const [key, setKey] = useState(initialKey);
     const [model, setModel] = useState(initialModel);
 

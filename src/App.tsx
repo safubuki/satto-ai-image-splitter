@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ApiKeyModal } from './components/ApiKeyModal';
+import { ApiKeyModal, resolveModel } from './components/ApiKeyModal';
 import { ImageUploader } from './components/ImageUploader';
 import { analyzeImage, type AnalyzeResponse, type SplitResult } from './lib/geminiSplitter';
 import { processImageCrops, fileToBase64, type CropResult } from './lib/imageProcessor';
@@ -18,7 +18,12 @@ import { ErrorDisplay } from './components/ui/ErrorDisplay';
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
-  const [model, setModel] = useState(() => localStorage.getItem('gemini_model') || 'gemini-2.5-flash-lite');
+  const [model, setModel] = useState(() => {
+    // Migrate any retired model ID saved by a previous version to a supported one.
+    const resolved = resolveModel(localStorage.getItem('gemini_model'));
+    localStorage.setItem('gemini_model', resolved);
+    return resolved;
+  });
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
 
   const [originalFile, setOriginalFile] = useState<File | null>(null);

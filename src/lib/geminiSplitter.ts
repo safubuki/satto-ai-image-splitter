@@ -207,7 +207,7 @@ function postProcessCrops(crops: SplitResult[]): SplitResult[] {
     return result;
 }
 
-export async function analyzeImage(fileBase64: string, apiKey: string, modelName: string = "gemini-2.5-flash-lite"): Promise<AnalyzeResponse> {
+export async function analyzeImage(fileBase64: string, apiKey: string, modelName: string = "gemini-3.1-flash-lite"): Promise<AnalyzeResponse> {
     const ai = new GoogleGenAI({ apiKey });
 
     // Detect MIME type before removing header
